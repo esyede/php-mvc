@@ -2,8 +2,8 @@
 /storage/
 /vendor/
 *.lock
-test.php
-test2.php
+./test.php
+./test2.php
 *.sql
 *.cache
 .php_cs
