@@ -14,72 +14,12 @@ if (! function_exists('get_user_agent')) {
 if (! function_exists('get_ip')) {
     function get_ip()
     {
-        $ip = false;
-        if (isset($_SERVER['HTTP_CLIENT_IP'])
-        && valid_ip($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
-        && filled($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            foreach ($ips as $addr) {
-                if (valid_ip($addr)) {
-                    $ip = $addr;
-                    break;
-                }
-            }
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED'])
-        && valid_ip($_SERVER['HTTP_X_FORWARDED'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED'];
-        } elseif (isset($_SERVER['HTTP_X_CLUSTER_CLIENT_IP'])
-        && valid_ip($_SERVER['HTTP_X_CLUSTER_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
-        } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])
-        && valid_ip($_SERVER['HTTP_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['HTTP_FORWARDED'])
-        && valid_ip($_SERVER['HTTP_FORWARDED'])) {
-            $ip = $_SERVER['HTTP_FORWARDED'];
-        } elseif (isset($_SERVER['HTTP_VIA'])
-        && valid_ip($_SERVER['HTTP_VIAD'])) {
-            $ip = $_SERVER['HTTP_VIA'];
-        } elseif (isset($_SERVER['REMOTE_ADDR'])
-        && filled($_SERVER['REMOTE_ADDR'])) {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        return (false === $ip) ? '0.0.0.0' : $ip;
-    }
-}
-
-// Validate client IP address
-if (! function_exists('valid_ip')) {
-    function valid_ip($ip)
-    {
-        $ip = trim($ip);
-        if (filled($ip) && -1 != ip2long($ip)) {
-            $reserved = [
-                ['0.0.0.0', '2.255.255.255'],
-                ['10.0.0.0', '10.255.255.255'],
-                ['127.0.0.0', '127.255.255.255'],
-                ['169.254.0.0', '169.254.255.255'],
-                ['172.16.0.0', '172.31.255.255'],
-                ['192.0.2.0', '192.0.2.255'],
-                ['192.168.0.0', '192.168.255.255'],
-                ['255.255.255.0', '255.255.255.255'],
-            ];
-
-            foreach ($reserved as $res) {
-                $min = ip2long($res[0]);
-                $max = ip2long($res[1]);
-                if ((ip2long($ip) >= $min) && (ip2long($ip) <= $max)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return false;
+        return getenv('HTTP_CLIENT_IP')
+            ?: getenv('HTTP_X_FORWARDED_FOR')
+                ?: getenv('HTTP_X_FORWARDED')
+                    ?: getenv('HTTP_FORWARDED_FOR')
+                        ?: getenv('HTTP_FORWARDED')
+                            ?: getenv('REMOTE_ADDR');
     }
 }
 

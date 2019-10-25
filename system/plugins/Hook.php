@@ -42,7 +42,7 @@ class Hook
             }
 
             if (false === $called) {
-                throw new \BadMethodCallException('Unable to call method: '.$this->method);
+                throw new \BadMethodCallException('Unable to call hook method: '.$this->method);
             }
 
             $this->reset();

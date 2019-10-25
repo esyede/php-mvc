@@ -2,7 +2,7 @@
 
 defined('BASE') or exit('No direct script access allowed');
 
-class View
+class Blade
 {
     protected $file_extension = null;
     protected $view_folder = null;
@@ -162,6 +162,15 @@ class View
     //!----------------------------------------------------------------
     //! Conserns
     //!----------------------------------------------------------------
+    /**
+     * Usage: @site('dahboard/index')
+     * @param   string  $value  Some PHP expression
+     * @return  string
+     */
+    protected function compileSite($value)
+    {
+        return "<?php echo site{$value}; ?>";
+    }
 
    /**
      * Usage: @php($var = 'value')

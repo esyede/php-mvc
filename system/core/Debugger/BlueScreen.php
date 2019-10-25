@@ -47,7 +47,7 @@ class BlueScreen
                 ? $source.(strpos($source, '?') ? '&' : '?').'_debugger_skip_error'
                 : null;
 
-        require __DIR__.DS.'assets'.DS.'BlueScreen'.DS.'bluescreen.phtml';
+        require __DIR__.DS.'assets'.DS.'BlueScreen'.DS.'bluescreen.php';
     }
 
     public static function highlightFile($file, $line, $lines = 15, array $vars = null)

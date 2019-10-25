@@ -788,7 +788,7 @@ if (! function_exists('hrtime')) {
     function hrtime($asNum = false)
     {
         $ns = microtime(false);
-        $s = substr($ns, 11) - self::$startAt;
+        $s = substr($ns, 11) - 1533462603;
         $ns = 1E9 * (float) $ns;
 
         if ($asNum) {

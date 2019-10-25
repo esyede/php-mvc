@@ -207,19 +207,19 @@ $code = $exception->getCode() ? ' #'.$exception->getCode() : '';
 			<?php else: ?>
 			<table>
 			<?php
-			foreach ($_SESSION as $k => $v) echo '<tr><th>', htmlspecialchars($k, ENT_IGNORE, 'UTF-8'), '</th><td>', $k === '__DBG' ? '<i>App Session</i>' : Dumper::toHtml($v, [Dumper::LOCATION => Dumper::LOCATION_CLASS, Dumper::LIVE => true]), "</td></tr>\n";
+			foreach ($_SESSION as $k => $v) echo '<tr><th>', htmlspecialchars($k, ENT_IGNORE, 'UTF-8'), '</th><td>', $k === '__DEBUGGER' ? '<i>App Session</i>' : Dumper::toHtml($v, [Dumper::LOCATION => Dumper::LOCATION_CLASS, Dumper::LIVE => true]), "</td></tr>\n";
 			?>
 			</table>
 			<?php endif ?>
 			</div>
 
 
-			<?php if (!empty($_SESSION['__DBG']['DATA'])):?>
+			<?php if (!empty($_SESSION['__DEBUGGER']['DATA'])):?>
 			<h3><a data-debugger-ref="^+" class="debugger-toggle">App Session</a></h3>
 			<div class="outer">
 			<table>
 			<?php
-			foreach ($_SESSION['__DBG']['DATA'] as $k => $v) echo '<tr><th>', htmlspecialchars($k, ENT_IGNORE, 'UTF-8'), '</th><td>', Dumper::toHtml($v, [Dumper::LOCATION => Dumper::LOCATION_CLASS, Dumper::LIVE => true]), "</td></tr>\n";
+			foreach ($_SESSION['__DEBUGGER']['DATA'] as $k => $v) echo '<tr><th>', htmlspecialchars($k, ENT_IGNORE, 'UTF-8'), '</th><td>', Dumper::toHtml($v, [Dumper::LOCATION => Dumper::LOCATION_CLASS, Dumper::LIVE => true]), "</td></tr>\n";
 			?>
 			</table>
 			</div>

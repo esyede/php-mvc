@@ -24,6 +24,10 @@ class Form
             $html = '<form name="'.$name.'" id="'.$name.'" ';
             if (count($attr) > 0) {
                 foreach ($attr as $key => $val) {
+                    if ($key == 'method') {
+                        $val = strtoupper($val);
+                    }
+
                     $html .= $key.'="'.$val.'" ';
                 }
             }
@@ -54,6 +58,7 @@ class Form
 
         return $this;
     }
+
 
     public function file($name = '', $multiple = false, array $attr = [])
     {
@@ -227,6 +232,30 @@ class Form
         if (true == $checked) {
             $html .= 'checked';
         }
+        $this->html .= trim($html).">\n";
+
+        return $this;
+    }
+
+
+    public function csrf_field($name = 'csrf_token', array $attr = [])
+    {
+        if (PHP_SESSION_ACTIVE !== session_status()) {
+            get_instance()->plugin('session');
+        }
+
+        $html = '<input type="hidden" name="'.$name.'" id="'.$name.'" ';
+        if (count($attr) > 0) {
+            foreach ($attr as $key => $val) {
+                if ($key === 'value') {
+                    continue;
+                }
+
+                $html .= $key.'="'.$val.'" ';
+            }
+        }
+
+        $html .='value="'.$_SESSION['csrf_token'].'"';
         $this->html .= trim($html).">\n";
 
         return $this;

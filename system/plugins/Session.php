@@ -17,14 +17,21 @@ class Session
     public function init()
     {
         if (PHP_SESSION_ACTIVE !== session_status()) {
+            if (! \Debugger\Debugger::isEnabled()) {
+                if (false !== config('config')['development']) {
+                    \Debugger\Debugger::dispatch();
+                }
+            }
+            
             @session_start();
-            \Debugger\Debugger::dispatch();
             $this->set('session_hash', $this->generateHash());
         } else {
             if (! hash_equals($this->get('session_hash'), $this->generateHash())) {
                 $this->destroy();
             }
         }
+
+        $this->set('csrf_token', $this->generateCsrfToken());
     }
 
     public function set($key, $value = null)
@@ -52,9 +59,15 @@ class Session
         return isset($_SESSION[$key]);
     }
 
-    public function delete($key)
+    public function delete($keys)
     {
-        unset($_SESSION[$key]);
+        if (is_array($keys)) {
+            foreach ($keys as $key) {
+                unset($_SESSION[$key]);
+            }
+        } else {
+            unset($_SESSION[$key]);
+        }
     }
 
     public function destroy()
@@ -65,16 +78,28 @@ class Session
 
     private function generateHash()
     {
+        $clientIp = getenv('HTTP_CLIENT_IP')
+            ?: getenv('HTTP_X_FORWARDED_FOR')
+                ?: getenv('HTTP_X_FORWARDED')
+                    ?: getenv('HTTP_FORWARDED_FOR')
+                        ?: getenv('HTTP_FORWARDED')
+                            ?: getenv('REMOTE_ADDR');
+        $identity = $this->config['encryption_key'].
+            $clientIp.$_SERVER['HTTP_USER_AGENT'].random_int(1, 9999);
+
+        return md5(sha1($identity));
+    }
+
+    private function generateCsrfToken()
+    {
         if (! function_exists('get_ip')) {
             get_instance()->helper('web');
         }
 
         $identity = $this->config['encryption_key'].
-        $_SERVER['HTTP_USER_AGENT'].
-        get_ip().
-        get_browser_lang();
+            random_int(1, 9999).microtime(true);
 
-        return md5(sha1(md5($identity)));
+        return base64_encode(crypt($identity));
     }
 
     public function setFlash($message, $redirectUrl = null)

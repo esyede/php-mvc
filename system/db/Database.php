@@ -158,7 +158,7 @@ class Database
 
             return $str;
         } else {
-            throw new \Exception('Invalid where condition.');
+            throw new \Exception('Database: invalid where condition');
         }
     }
 
@@ -618,7 +618,9 @@ class Database
         return $value;
     }
 
-    /*** Cache Methods ***/
+    //!----------------------------------------------------------------
+    //! Core methods
+    //!----------------------------------------------------------------
 
     public function setCache($cache)
     {

@@ -84,7 +84,9 @@ class Response
     {
         return [
             'code' => is_null($code) ? http_response_code() : $code,
-            'text' => $this->status_codes[$code],
+            'text' => isset($this->status_codes[$code])
+                ? $this->status_codes[$code]
+                : 'Internal Error',
         ];
     }
 

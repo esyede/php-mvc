@@ -82,8 +82,8 @@ class Debugger
         if (self::$log_directory) {
             if (! is_dir(self::$log_directory)
             || ! preg_match('#([a-z]+:)?[/\\\\]#Ai', self::$log_directory)) {
+                $text = 'Logging directory not found or is not absolute path: '.self::$log_directory;
                 self::$log_directory = null;
-                $text = 'Logging directory not found or is not absolute path.';
                 self::exceptionHandler(new \RuntimeException($text));
             }
         }
@@ -223,7 +223,7 @@ class Debugger
             if (self::isHtmlMode()) {
                 $logged = empty($e);
                 require self::$error_template
-                    ?: __DIR__.DS.'assets'.DS.'Debugger'.DS.'errors'.DS.'500.phtml';
+                    ?: __DIR__.DS.'assets'.DS.'Debugger'.DS.'errors'.DS.'debugger.php';
             } elseif (PHP_SAPI === 'cli') {
                 fwrite(STDERR, 'ERROR: application encountered an error and can not continue. '.
                     (isset($e) ? "Unable to log error.\n" : "Error was logged.\n"));

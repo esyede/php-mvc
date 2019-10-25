@@ -27,12 +27,17 @@ class App
         $date = $this->config['default_timezone'];
         date_default_timezone_set(is_null($date) ? 'UTC' : $date);
         $this->createStorageFolders();
-        $logPath = storage_path('logs');
-        $production = (true !== $this->config['development']);
-        \Debugger\Debugger::enable($production, $logPath);
 
-        if (filled($this->config['error_email'])) {
-            \Debugger\Debugger::$email = $this->config['error_email'];
+        if (false === \Debugger\Debugger::isEnabled()) {
+            $logPath = storage_path('logs');
+            $production = (true !== $this->config['development']);
+            
+            if (filled($this->config['error_email'])) {
+                \Debugger\Debugger::$email = $this->config['error_email'];
+            }
+
+            \Debugger\Debugger::enable($production, $logPath);
+            \Debugger\Debugger::getBar()->addPanel(new \Debugger\GlobalsPanel());
         }
 
         $this->controller = $this->config['default_controller'];
@@ -53,20 +58,22 @@ class App
             $this->setParams($this->url);
         }
 
-        $vendor = $this->loader->config('autoload');
-        $vendor = $vendor['composer'];
-        $vendor = str_replace(['/', '\\'], DS, ltrim($vendor, '/'));
-        if (is_dir($vendor)) {
-            require_once $vendor.DS.'autoload.php';
-        }
+        $composer = $this->loader->config('autoload')['composer'];
+        $composer = str_replace(['/', '\\'], DS, trim(trim($composer, '/'), '\\'));
+        if (filled($composer)) {
+            if (! is_file(root_path($composer))) {
+                throw new \RuntimeException('Composer autoloader not found: '.root_path($composer));
+            }
 
+            $this->loader->file($composer);
+        }
+        
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
     /**
-     * Run the framework.
-     *
-     * @return bool TRUE on success, FALSE otherwise
+     * Run the framework
+     * @return  bool
      */
     private function run()
     {
@@ -117,13 +124,12 @@ class App
             }
         }
 
-        return $matched > 0;
+        return ($matched > 0);
     }
 
     /**
-     * Set controller based on supplied array of query strings.
-     *
-     * @param array|null $url Array of current query strings
+     * Set controller based on supplied query string
+     * @param  array|null  $url  Query string
      */
     private function setController(array $url = null)
     {
@@ -131,7 +137,7 @@ class App
             $location = APP.'controllers'.DS;
             if (is_dir($location.$url[0])) {
                 $this->inside_subfolder = true;
-                if (is_file($location.$url[0].DS.$this->makeURL($url[1]).'.php')) {
+                if (isset($url[1]) && is_file($location.$url[0].DS.$this->makeURL($url[1]).'.php')) {
                     $this->controller = $this->makeURL($url[1]);
                     $this->requireFile($location.$url[0].DS.$this->controller);
                     $this->controller = new $this->controller();
@@ -156,9 +162,8 @@ class App
     }
 
     /**
-     * Set action based on supplied array of query strings.
-     *
-     * @param array|null $url Array of current query strings
+     * Set action based on supplied query string
+     * @param  array|null  $url  Query string
      */
     private function setAction(array $url = null)
     {
@@ -188,9 +193,8 @@ class App
     }
 
     /**
-     * Set parameters based on supplied array of query strings.
-     *
-     * @param array|null $url Array of current query strings
+     * Set parameters based on supplied query string
+     * @param  array|null  $url  Query string
      */
     private function setParams(array $url = null)
     {
@@ -208,11 +212,9 @@ class App
 
     /**
      * Normalize query string to match with
-     * internal class and method naming convention.
-     *
-     * @param string $str Current query string
-     *
-     * @return string Normailzed string
+     * internal class and method naming convention
+     * @param   string  $str  Query string
+     * @return  string
      */
     public function makeURL($str)
     {
@@ -244,11 +246,8 @@ class App
     }
 
     /**
-     * Create initial system's storage folders.
-     *
-     * @throws \RuntimeException Throws runtime exception on failure, script will be terminated
-     *
-     * @return bool TRUE on success, FALSE otherwise
+     * Create system storage folders
+     * @return  bool
      */
     private function createStorageFolders()
     {
@@ -256,23 +255,23 @@ class App
             $this->loader->helper('path');
         }
 
-        $storage = $this->config['storage_path'];
         $created = false;
+        if (! is_dir(storage_path())) {
+            $created = create_folder(storage_path());
+        }
 
-        if (! file_exists($storage)) {
-            $created = create_folder($storage);
-            
-            $folders = ['cache', 'cookies', 'logs', 'uploads', 'views'];
-            foreach ($folders as $folder) {
-                $path = $this->config['storage_path'].DS.$folder;
-                $created = $created && create_folder($path);
+        $folders = ['cache', 'cookies', 'logs', 'uploads', 'views'];
+        foreach ($folders as $folder) {
+            $path = storage_path($folder);
+            if (! is_dir($path)) {
+                $created =  create_folder($path);
             }
+        }
 
-            if (true !== $created) {
-                $message = 'Unable to create system storage folder, '.
-                    'please make sure this root folder is exists and writable: '.$storage;
-                throw new \RuntimeException($message);
-            }
+        \Debugger\Debugger::$log_directory = storage_path('logs/');
+        if (true !== $created) {
+            $message = 'Unable to create system storage folder: '.storage_path();
+            throw new \RuntimeException($message);
         }
 
         return true;

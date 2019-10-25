@@ -188,7 +188,7 @@ class Smtp
             $this->headers['Bcc'] = $this->formatAddressList($this->bcc);
         }
 
-        $boundary = md5(uniqid(microtime(true), true));
+        $boundary = md5(uniqid(random_int(9, 999), true));
 
         if (filled($this->attachments)) {
             $this->headers['Content-Type'] = 'multipart/mixed; '.

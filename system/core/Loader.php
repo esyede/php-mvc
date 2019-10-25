@@ -21,7 +21,6 @@ class Loader
         if (null === self::$instance) {
             self::$instance = new self();
         }
-
         return self::$instance;
     }
 
@@ -57,19 +56,21 @@ class Loader
         }
     }
 
-
-    public function view($view, array $data = [])
+    public function view($view, array $data = [], $returnOnly = false)
     {
-        $view = trim(str_replace(['.', '/'], DS, $view), DS);
-        $view = APP.'views'.DS.$view.'.php';
-
-        if (is_file($view)) {
-            extract($data);
-            
-            return require_once $view;
-        } else {
-            throw new \RuntimeException('View not found: '.$view);
+        $view = str_replace(['.', '/'], DS, $view);
+        $view = app_path('views/'.$view.'.php');
+        
+        if (! is_file($view)) {
+            throw new \RuntimeException('View not found: ' . $view);
         }
+
+        if ($returnOnly) {
+            return file_get_contents($view);
+        }
+
+        extract($data);
+        return require_once $view;
     }
 
 
@@ -159,7 +160,7 @@ class Loader
 
     public function database()
     {
-        require_once system_path('plugins/Database.php');
+        require_once system_path('db/Database.php');
         $env = $this->config('config');
         $config = $this->config('database', $env['development']);
 
@@ -169,7 +170,7 @@ class Loader
 
     public function schema()
     {
-        require_once system_path('plugins/Schema.php');
+        require_once system_path('db/Schema.php');
         $env = $this->config('config');
         $config = $this->config('database');
 
@@ -188,19 +189,19 @@ class Loader
     }
 
 
-    public function language($language)
+    public function language($language, $path = null)
     {
         $location = $language;
         if (is_null($path)) {
             $default = $this->config('language');
             $default = $default['default_language'];
-            $location = 'languages'.DS.$default;
+            $location = 'lang'.DS.$default;
         } else {
-            $location = 'languages'.$path.DS;
+            $location = 'lang'.$path.DS;
         }
 
-        $appLang = app_path('configs/'.$location.'/'.$language.'.ini');
-        $sysLang = system_path($location.'/'.$language.'.ini');
+        $appLang = app_path('configs'.DS.$location.DS.$language.'.ini');
+        $sysLang = system_path($location.DS.$language.'.ini');
 
         if (is_file($appLang)) {
             $this->language = parse_ini_file($appLang, true, INI_SCANNER_RAW);
@@ -209,5 +210,19 @@ class Loader
         } else {
             throw new \RuntimeException('Language file not found: '.$language);
         }
+
+        return $this->language;
+    }
+
+
+    public function file($path)
+    {
+        if (is_file(root_path($path))) {
+            require_once root_path($path);
+            
+            return true;
+        }
+
+        throw new \RuntimeException('Unable to load file: '.root_path($path));
     }
 }

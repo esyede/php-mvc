@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
-<title>Server Error</title>
+<title><?php echo $code.' '.$text ?>!</title>
 
 <style>
 	#error-page { background: white; width: 500px; margin: 70px auto; padding: 10px 20px }
@@ -11,10 +11,9 @@
 </style>
 
 <div id="error-page">
-	<h1>Server Error</h1>
+	<h1><?php echo $text ?>!</h1>
 
-	<p>We're sorry! The server encountered an internal error and
-	was unable to complete your request. Please try again later.</p>
+	<p><?php echo $message ?></p>
 
-	<p><small>Code: 500</small></p>
+	<p><small>Code: <?php echo $code ?></small></p>
 </div>

@@ -6,6 +6,7 @@ class Cookie
 {
     private $config;
     private $boundary = '--';
+    private $random;
 
     protected $folder = null;
     protected $domain = '';
@@ -15,6 +16,7 @@ class Cookie
     public function __construct()
     {
         $this->config = config('config');
+        $this->random = $this->config['encryption_key'].random_int(99, 999999);
         $this->setFolder(storage_path('cookies'));
     }
 
@@ -61,7 +63,7 @@ class Cookie
     public function set($name, $value, $time = null)
     {
         if (true == $this->config['cookie_security']) {
-            $value .= $this->boundary.md5($value.$this->config['encryption_key']);
+            $value .= $this->boundary.md5($value.$this->random);
         }
         $time = is_numeric($time) ? (time() + (60 * 60 * $time)) : 0;
         setcookie($name, $value, $time, $this->folder, $this->domain, $this->secure, $this->http_only);
@@ -72,10 +74,9 @@ class Cookie
         if ($this->has($name)) {
             if (true == $this->config['cookie_security']) {
                 $slices = explode($this->boundary, $_COOKIE[$name]);
-                if (md5($slices[0].$this->config['encryption_key']) == $slices[1]) {
+                if (md5($slices[0].$this->random) == $slices[1]) {
                     return $slices[0];
                 } else {
-                    // dd('Cookie does not match');
                     return false;
                 }
             }
@@ -98,6 +99,6 @@ class Cookie
 
     public function has($name)
     {
-        return (bool) (isset($_COOKIE[$name]));
+        return (bool) isset($_COOKIE[$name]);
     }
 }

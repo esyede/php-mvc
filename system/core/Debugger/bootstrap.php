@@ -6,6 +6,7 @@ require __DIR__.DS.'BarPanelInterface.php';
 require __DIR__.DS.'Bar.php';
 require __DIR__.DS.'BlueScreen.php';
 require __DIR__.DS.'DefaultBarPanel.php';
+require __DIR__.DS.'GlobalsPanel.php';
 require __DIR__.DS.'DbPanel.php';
 require __DIR__.DS.'Dumper.php';
 require __DIR__.DS.'LoggerInterface.php';

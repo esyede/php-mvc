@@ -17,12 +17,12 @@ class Validation
 
     public function __construct($data = [], $keys = [])
     {
-        $this->messages = config('validation');
+        $this->messages = get_instance()->language('validation');
         $this->reset();
-        $this->begin($data, $keys);
+        $this->init($data, $keys);
     }
 
-    public function begin($data = [], $keys = [])
+    public function init($data = [], $keys = [])
     {
         $this->reset();
         $this->keys = (filled($keys))
@@ -653,7 +653,7 @@ class Validation
             }
         }
 
-        return 0 === count($this->errors());
+        return (0 === count($this->errors()));
     }
 
     public function bail($bail = true)

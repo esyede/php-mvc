@@ -33,7 +33,7 @@ class Bar
     {
         @session_start();
 
-        $session = &$_SESSION['__DBG']['__InternalDebugger'];
+        $session = &$_SESSION['__DEBUGGER']['__InternalDebugger'];
         $redirect = preg_match('#^Location:#im', implode("\n", headers_list()));
 
         if ($redirect) {
@@ -90,6 +90,6 @@ class Bar
             $liveData += $info['liveData'];
         }
         $session = null;
-        require __DIR__.DS.'assets'.DS.'Bar'.DS.'bar.phtml';
+        require __DIR__.DS.'assets'.DS.'Bar'.DS.'bar.php';
     }
 }

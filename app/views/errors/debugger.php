@@ -1,12 +1,7 @@
-<?php
-namespace Debugger;
-defined('BASE') or exit('No direct script access allowed');
-?>
 <!DOCTYPE html>
 <meta charset="utf-8">
-<meta name=robots content=noindex>
-<meta name=generator content="Debugger">
-<title>Page Not Found!</title>
+<meta name="robots" content="noindex">
+<title>Server Error</title>
 
 <style>
 	#debugger-error { background: white; width: 500px; margin: 70px auto; padding: 10px 20px }
@@ -16,10 +11,10 @@ defined('BASE') or exit('No direct script access allowed');
 </style>
 
 <div id=debugger-error>
-	<h1>Page Not Found!</h1>
+	<h1>Server Error</h1>
 
-	<p>We're sorry! The page you have requested cannot be found on this server. 
-	The page may be deleted or no longer exists.</p>
+	<p>We're sorry! The server encountered an internal error and
+	was unable to complete your request. Please try again later.</p>
 
-	<p><small>Code: 404</small></p>
+	<p><small>Code: 500</small></p>
 </div>

@@ -19,7 +19,7 @@ class DefaultBarPanel implements BarPanelInterface
         ob_start(function () { });
 
         $data = $this->data;
-        require __DIR__.DS.'assets'.DS.'Bar'.DS.$this->id.'.tab.phtml';
+        require __DIR__.DS.'assets'.DS.'Bar'.DS.$this->id.'.tab.php';
 
         return ob_get_clean();
     }
@@ -28,9 +28,9 @@ class DefaultBarPanel implements BarPanelInterface
     {
         ob_start(function () { });
 
-        if (is_file(__DIR__.DS.'assets'.DS.'Bar'.DS.$this->id.'.panel.phtml')) {
+        if (is_file(__DIR__.DS.'assets'.DS.'Bar'.DS.$this->id.'.panel.php')) {
             $data = $this->data;
-            require __DIR__.DS.'assets'.DS.'Bar'.DS.$this->id.'.panel.phtml';
+            require __DIR__.DS.'assets'.DS.'Bar'.DS.$this->id.'.panel.php';
         }
 
         return ob_get_clean();

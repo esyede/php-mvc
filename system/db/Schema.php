@@ -1136,7 +1136,7 @@ class Column
         return $this;
     }
 
-    public function longText()
+    public function longtext()
     {
         $this->type = Schema::DT_LONGTEXT;
 
@@ -1158,7 +1158,7 @@ class Column
         return $this;
     }
 
-    public function dateTime()
+    public function datetime()
     {
         $this->type = Schema::DT_DATETIME;
 

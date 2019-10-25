@@ -7,7 +7,7 @@ if (! function_exists('root_path')) {
     {
         $path = ltrim($path, '/');
         $path = ltrim($path, '\\');
-        $path = ROOT.str_replace('/\\', DS.DS, rtrim($path, '/\\'));
+        $path = ROOT.str_replace('/', DS, rtrim($path, '/\\'));
 
         return $path;
     }
@@ -19,7 +19,7 @@ if (! function_exists('app_path')) {
     {
         $path = ltrim($path, '/');
         $path = ltrim($path, '\\');
-        $path = APP.str_replace('/\\', DS.DS, rtrim($path, '/\\'));
+        $path = APP.str_replace('/', DS, rtrim($path, '/\\'));
 
         return $path;
     }
@@ -31,7 +31,7 @@ if (! function_exists('system_path')) {
     {
         $path = ltrim($path, '/');
         $path = ltrim($path, '\\');
-        $path = SYSTEM.str_replace('/\\', DS.DS, rtrim($path, '/\\'));
+        $path = SYSTEM.str_replace('/', DS, rtrim($path, '/\\'));
 
         return $path;
     }
@@ -45,7 +45,7 @@ if (! function_exists('storage_path')) {
         $storage = $storage['storage_path'];
         $path = trim($path, '/');
         $path = trim($path, '\\');
-        $path = str_replace('/\\', DS.DS, rtrim(ROOT.$storage.DS.$path, '/\\'));
+        $path = str_replace('/', DS, rtrim(ROOT.$storage.DS.$path, '/\\'));
 
         return $path;
     }
@@ -57,7 +57,7 @@ if (! function_exists('uploads_path')) {
     {
         $path = ltrim($path, '/');
         $path = ltrim($path, '\\');
-        $path = storage_path('uploads'.DS.str_replace('/\\', DS.DS, rtrim($path, '/\\')));
+        $path = storage_path('uploads'.DS.str_replace('/', DS, rtrim($path, '/\\')));
 
         return $path;
     }

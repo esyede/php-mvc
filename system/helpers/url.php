@@ -80,13 +80,31 @@ if (! function_exists('current_segment')) {
 
 // Redirect to another page
 if (! function_exists('redirect')) {
-    function redirect($link, $delay = 0)
+    function redirect($uri = '', $method = 'auto', $code = null)
     {
-        if ($delay > 0) {
-            header('Refresh: '.$delay.';url='.$link);
-        } else {
-            header('Location: '.$link);
+        $uri = preg_match('#^(\w+:)?//#i', $uri) ? $uri : site($uri);
+        if ('auto' === $method
+        && isset($_SERVER['SERVER_SOFTWARE'])
+        && false !== strpos($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+            $method = 'refresh';
+        } elseif ('refresh' !== $method && (blank($code) || ! is_numeric($code))) {
+            if (isset($_SERVER['SERVER_PROTOCOL'], $_SERVER['REQUEST_METHOD'])
+            && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.1') {
+                $code = ($_SERVER['REQUEST_METHOD'] !== 'GET') ? 303 : 307;
+            } else {
+                $code = 302;
+            }
         }
+        
+        switch ($method) {
+            case 'refresh':
+                header('Refresh:0;url='.$uri);
+                break;
+            default:
+                header('Location: '.$uri, true, $code);
+                break;
+        }
+        exit;
     }
 }
 

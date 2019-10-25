@@ -2,7 +2,7 @@
 PHP MVC is a simple application framework built with MVC support, 
 inspired by Code Igniter and Laravel framewok.
 
-Visit http://phpmvc.somesite.id/ [inexists] for more information and documentation.
+Visit http://php-mvc.esyede.id/ [inexists] for more information and documentation.
 
 
 # Requirements
@@ -12,27 +12,26 @@ Visit http://phpmvc.somesite.id/ [inexists] for more information and documentati
 
 
 # Installation
-
 Using composer [unsupported yet]
 ```sh
-$ composer create-project somesite/phpmvc phpmvc
+$ composer create-project esyede/php-mvc php-mvc
 ```
 
 or, you can directly download from the [release](/releases) page.
 
 
 # Documentation
-Visit http://phpmvc.somesite.id/ [inexists] to read the full documentation.
+Visit http://php-mvc.esyede.id/ [inexists] to read the full documentation.
 
 
 # To Do
-- Better Debugger [done]
-- Schema Builder [done]
-- Migrations [in progress]
-- Authentication
-- CLI Tool
-- Unit Test (?)
-- Composer package (?)
+* [x] Better debugger
+* [x] Schema builder
+* [x] Migrations
+* [ ] Authentication (on progress)
+* [ ] CLI tool (?)
+* [ ] Unit test (?)
+* [ ] Composer package (?)
 
 
 # Cobtribute

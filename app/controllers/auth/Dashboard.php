@@ -2,19 +2,20 @@
 
 defined('BASE') or exit('No direct script access allowed');
 
-class Welcome extends Controller
+class Dashboard extends Controller
 {
     public function __construct()
     {
         parent::__construct();
+        $this->load->plugin('auth');
+        // $this->auth->guarded();
     }
 
     public function index()
     {
-        $title = 'home';
+        $title = 'dashboard';
         $content = 'This is your '.$title.' page';
         
-        // $this->blade->clearCache();
-        $this->blade->render('home.index', compact('title', 'content'));
+        $this->blade->render('auth.dashboard', compact('title', 'content'));
     }
 }

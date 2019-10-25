@@ -72,7 +72,8 @@ class Filesystem
     {
         $path = str_replace(['/', '\\'], DS, $path);
         $mask = umask(0);
-        if (! mkdir($path, $chmod, true)) {
+        $addBlankIndexFile = touch(rtrim($path, DS).DS.'index.html');
+        if (! mkdir($path, $chmod, true) && $addBlankIndexFile) {
             return false;
         }
 

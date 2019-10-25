@@ -8,10 +8,10 @@ require __DIR__.'/Debugger/bootstrap.php';
 
 use Debugger\Debugger;
 
-$error = APP.'views'.DS.'errors'.DS.'500.php';
-Debugger::enable();
-Debugger::$error_template = is_file($error) ? $error : null;
+$errorTemplate = APP.'views'.DS.'errors'.DS.'debugger.php';
+Debugger::$error_template = is_file($errorTemplate) ? $errorTemplate : null;
 Debugger::$strict_mode = true;
+Debugger::isEnabled() or Debugger::enable();
 
 // Convenient way to initialize Loader class (singleton)
 if (! function_exists('get_instance')) {
@@ -21,14 +21,65 @@ if (! function_exists('get_instance')) {
     }
 }
 
-// Helper function used to create initial system's storage folders
-if (! function_exists('create_folder')) {
-    function create_folder($path, $chmod = 0755)
+if (! function_exists('show_error')) {
+    function show_error($message, $code = 500)
     {
-        $path = str_replace('/\\', DS.DS, rtrim(ROOT.$path, '/\\')).DS;
-        $created = @mkdir($path, $chmod, true) && touch($path.'index.html');
+        $code = abs($code);
+        if ($code < 100) {
+            $exit = $code + 9;
+            $code = 500;
+        } else {
+            $exit = 1;
+        }
 
-        return $created;
+        require_once SYSTEM.'core'.DS.'Response.php';
+        $response = new Response();
+
+        $response->setStatus($code);
+        $data = $response->getStatus($code);
+        $data['message'] = $message;
+
+        $errFile = APP.'views'.DS.'errors'.DS.'general.php';
+        if (! is_file($errFile)) {
+            $errFile = SYSTEM.'core'.DS.'Debugger'.DS.
+                'assets'.DS.'Debugger'.DS.'errors'.DS.'general.php';
+        }
+        extract($data);
+        require_once $errFile;
+        exit($exit);
+    }
+}
+
+// Convenient way to show 404 error page
+if (! function_exists('notfound')) {
+    function notfound()
+    {
+        $message = "We're sorry! The page you have requested ".
+            "cannot be found on this server. ".
+            "The page may be deleted or no longer exists.";
+        show_error($message, 404);
+    }
+}
+
+// Convenient way to add timer (for benchmarking)
+if (! function_exists('timer')) {
+    function timer($name = null)
+    {
+        $name = is_string($name) ? $name : null;
+
+        return Debugger::timer($name);
+    }
+}
+
+// Helper function used to write log message
+if (! function_exists('write_log')) {
+    function write_log($message, $type = 'info')
+    {
+        $type = is_string($type) ? strtolower($type) : 'info';
+        $types = ['info', 'warning', 'error', 'debug', 'exception', 'critical'];
+        $type = in_array($type, $types) ? $type : 'info';
+
+        return Debugger::log($message, $type);
     }
 }
 
@@ -69,22 +120,6 @@ if (! function_exists('e')) {
     }
 }
 
-// Convenient way to show 404 error page
-if (! function_exists('notfound')) {
-    function notfound()
-    {
-        $error = APP.'views'.DS.'errors'.DS.'404.php';
-        if (is_file($error)) {
-            require_once $error;
-            die();
-        } else {
-            $error = SYSTEM.'core'.DS.'Debugger'.DS.'assets'.DS.'errors'.DS.'404.php';
-            require_once $error;
-            die();
-        }
-    }
-}
-
 if (! function_exists('blank')) {
     function blank($value)
     {
@@ -113,6 +148,21 @@ if (! function_exists('filled')) {
     function filled($value)
     {
         return ! blank($value);
+    }
+}
+
+// Helper function used to create new folder (with aaded index file for security)
+if (! function_exists('create_folder')) {
+    function create_folder($path, $chmod = 0755)
+    {
+        $path = str_replace('/', DS, rtrim(rtrim(ROOT.$path, '/'), DS)).DS;
+        $makedir = @mkdir($path, $chmod, true);
+        bd($makedir,'makedir');
+        $created = (false != $makedir);
+        $makeIndex =  @file_put_contents($path.'index.html', '', LOCK_EX);
+        $created = $created && (false != $makeIndex);
+
+        return $created;
     }
 }
 

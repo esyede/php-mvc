@@ -6,6 +6,9 @@ class Controller extends Loader
 {
     protected $load;
     protected $language;
+    protected $input;
+    protected $response;
+    protected $blade = null;
 
     private $autoload;
 
@@ -16,14 +19,19 @@ class Controller extends Loader
     {
         $this->load = $this;
         $this->autoload = $this->load->config('autoload');
+        if (is_null($this->blade)) {
+            $this->load->file('system/plugins/Blade.php');
+            $this->blade = new Blade();
+        }
+
+        $this->autoloadAdditionalCoreClasses();
         $this->autoloadHelpers();
         $this->autoloadPlugins();
     }
 
     /**
-     * Autoload user's defined helpers (in config/autoload.php).
-     *
-     * @throws \RuntimeException Throws RuntimeException on failure
+     * Autoload helpers (defined in config/autoload.php)
+     * @return  void
      */
     public function autoloadHelpers()
     {
@@ -36,9 +44,8 @@ class Controller extends Loader
     }
 
     /**
-     * Autoload user's defined plugins (in config/autoload.php).
-     *
-     * @throws \RuntimeException Throws RuntimeException on failure
+     * Autoload plugins (defined in config/autoload.php)
+     * @return  void
      */
     public function autoloadPlugins()
     {
@@ -46,6 +53,23 @@ class Controller extends Loader
             foreach ($this->autoload['plugins'] as $plugin) {
                 $pluginName = ucfirst($plugin);
                 $this->$plugin = $this->load->plugin($pluginName);
+            }
+        }
+    }
+
+
+    public function autoloadAdditionalCoreClasses()
+    {
+        $classes = ['input', 'response'];
+
+        foreach ($classes as $class) {
+            $uppercased = ucfirst($class);
+            $this->load->file('system/core/'.$uppercased.'.php');
+
+            try {
+                $this->$class = new $uppercased();
+            } catch (\Exception $e) {
+                throw new \Exception($e->getMessage());
             }
         }
     }
