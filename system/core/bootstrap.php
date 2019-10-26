@@ -180,6 +180,6 @@ if (! function_exists('plugin')) {
 if (! function_exists('helper')) {
     function helper($helper)
     {
-        get_instance()->helper($helper);
+        return get_instance()->helper($helper);
     }
 }
