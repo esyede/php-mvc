@@ -268,11 +268,12 @@ class App
             }
         }
 
-        \Debugger\Debugger::$log_directory = storage_path('logs/');
         if (true !== $created) {
             $message = 'Unable to create system storage folder: '.storage_path();
             throw new \RuntimeException($message);
         }
+        
+        \Debugger\Debugger::$log_directory = storage_path('logs/');
 
         return true;
     }
