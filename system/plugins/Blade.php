@@ -18,9 +18,6 @@ class Blade
     protected $empty_counter = 0;
     protected $first_case_switch = true;
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         get_instance()->helper('url');
