@@ -4,7 +4,7 @@ defined('BASE') or exit('No direct script access allowed');
 
 class App
 {
-    private $loader;
+    private $load;
 
     protected $config;
     protected $url;
@@ -22,8 +22,8 @@ class App
      */
     public function __construct()
     {
-        $this->loader = get_instance();
-        $this->config = $this->loader->config('config');
+        $this->load = get_instance();
+        $this->config = $this->load->config('config');
         $date = $this->config['default_timezone'];
         date_default_timezone_set(is_null($date) ? 'UTC' : $date);
         $this->createStorageFolders();
@@ -50,7 +50,7 @@ class App
         }
 
         $this->url = $this->parseURL();
-        $this->routes = $this->loader->config('routes');
+        $this->routes = $this->load->config('routes');
 
         if (false === $this->run()) {
             $this->setController($this->url);
@@ -58,14 +58,14 @@ class App
             $this->setParams($this->url);
         }
 
-        $composer = $this->loader->config('autoload')['composer'];
+        $composer = $this->load->config('autoload')['composer'];
         $composer = str_replace(['/', '\\'], DS, trim(trim($composer, '/'), '\\'));
         if (filled($composer)) {
             if (! is_file(root_path($composer))) {
                 throw new \RuntimeException('Composer autoloader not found: '.root_path($composer));
             }
 
-            $this->loader->file($composer);
+            $this->load->file($composer);
         }
         
         call_user_func_array([$this->controller, $this->method], $this->params);
@@ -252,7 +252,7 @@ class App
     private function createStorageFolders()
     {
         if (! function_exists('storage_path')) {
-            $this->loader->helper('path');
+            $this->load->helper('path');
         }
 
         $created = true;

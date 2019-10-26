@@ -3,7 +3,7 @@ defined('BASE') or exit('No direct script access allowed');
 
 class Auth
 {
-    protected $loader;
+    protected $load;
     protected $db;
     protected $session = null;
 
@@ -18,16 +18,16 @@ class Auth
 
     public function __construct()
     {
-        $this->loader = get_instance();
-        $this->loader->helper('url');
+        $this->load = get_instance();
+        $this->load->helper('url');
         $this->init();
     }
 
     
     protected function init()
     {
-        $this->db = $this->loader->database();
-        $this->session = $this->loader->plugin('session');
+        $this->db = $this->load->database();
+        $this->session = $this->load->plugin('session');
 
         if ($this->session->has('user_id') && $this->session->get('authenticated')) {
             $this->user_id = $this->session->get('user_id');
@@ -54,10 +54,9 @@ class Auth
         return false;
     }
 
-
     protected function validate($username, $password)
     {
-        $validation = $this->loader->plugin('validation');
+        $validation = $this->load->plugin('validation');
         $validation->init(compact('username', 'password'));
         $validation->rule('required', ['username', 'password']);
 
