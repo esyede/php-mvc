@@ -24,7 +24,8 @@ class Login extends Controller
         
         $data = [
             'title' => 'Auth Login',
-            'content' => 'Please fill to login'
+            'content' => 'Please fill to login',
+            'form' => plugin('form'),
         ];
 
         $this->blade->render('auth.login', $data);
