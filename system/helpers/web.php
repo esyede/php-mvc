@@ -39,7 +39,7 @@ if (! function_exists('is_mobile')) {
 if (! function_exists('is_referral')) {
     function is_referral()
     {
-        return isset($_SERVER['HTTP_REFERER']) && '' != $_SERVER['HTTP_REFERER'];
+        return isset($_SERVER['HTTP_REFERER']) && filled($_SERVER['HTTP_REFERER']);
     }
 }
 
@@ -48,7 +48,7 @@ if (! function_exists('is_robot')) {
     function is_robot()
     {
         return isset($_SERVER['HTTP_USER_AGENT'])
-        && preg_match('/bot|crawl|slurp|spider/i', $_SERVER['HTTP_USER_AGENT']);
+            && preg_match('/bot|crawl|slurp|spider/i', $_SERVER['HTTP_USER_AGENT']);
     }
 }
 
@@ -56,7 +56,7 @@ if (! function_exists('is_robot')) {
 if (! function_exists('get_referrer')) {
     function get_referrer()
     {
-        return (! isset($_SERVER['HTTP_REFERER']) || '' == $_SERVER['HTTP_REFERER'])
+        return (! isset($_SERVER['HTTP_REFERER']) || blank($_SERVER['HTTP_REFERER']))
             ? '' : trim($_SERVER['HTTP_REFERER']);
     }
 }

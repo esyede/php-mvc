@@ -4,17 +4,14 @@ defined('BASE') or exit('No direct script access allowed');
 
 class Controller extends Loader
 {
+    private $autoload;
+    
     protected $load;
     protected $language;
     protected $input;
     protected $response;
     protected $blade = null;
 
-    private $autoload;
-
-    /**
-     * Constructor.
-     */
     public function __construct()
     {
         $this->load = $this;
@@ -30,8 +27,7 @@ class Controller extends Loader
     }
 
     /**
-     * Autoload helpers (defined in config/autoload.php)
-     * @return  void
+     * Autoload helper files
      */
     public function autoloadHelpers()
     {
@@ -44,8 +40,7 @@ class Controller extends Loader
     }
 
     /**
-     * Autoload plugins (defined in config/autoload.php)
-     * @return  void
+     * Autoload plugin files
      */
     public function autoloadPlugins()
     {
@@ -57,15 +52,13 @@ class Controller extends Loader
         }
     }
 
-
     public function autoloadAdditionalCoreClasses()
     {
         $classes = ['input', 'response'];
-
         foreach ($classes as $class) {
             $uppercased = ucfirst($class);
             $this->load->file('system/core/'.$uppercased.'.php');
-
+            
             try {
                 $this->$class = new $uppercased();
             } catch (\Exception $e) {

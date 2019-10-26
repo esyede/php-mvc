@@ -1,5 +1,7 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 ?>
 <!DOCTYPE html><!-- "' --></script></style></noscript></xmp>
@@ -21,5 +23,5 @@ defined('BASE') or exit('No direct script access allowed');
 	<p>We're sorry! The server encountered an internal error and
 	was unable to complete your request. Please try again later.</p>
 
-	<p><small>Code: 500<?php if (!$logged): ?><br>Debugger is unable to log error.<?php endif ?></small></p>
+	<p><small>Code: 500<?php if (! $logged): ?><br>Debugger is unable to log error.<?php endif; ?></small></p>
 </div>

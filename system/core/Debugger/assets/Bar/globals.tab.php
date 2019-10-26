@@ -1,5 +1,7 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 ?>
 <span class="debugger-label" title="Global Variables">

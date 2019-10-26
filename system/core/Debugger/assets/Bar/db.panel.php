@@ -1,5 +1,7 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 ?>
 <style>tr.mono { font-family: monospace !important; }</style>
@@ -19,13 +21,13 @@ defined('BASE') or exit('No direct script access allowed');
             <th>Presistent Mode</th>
         </tr>
         <tr class="mono">
-            <td><?php echo $data['total_time'] ?></td>
-            <td><?php echo $data['avg_query_time'] ?></td>
-            <td><?php echo $data['num_queries'] ?></td>
-            <td><?php echo $data['num_rows'] ?></td>
-            <td><?php echo $data['num_changes'] ?></td>
-            <td><?php echo $this->getDbServerVersion() ?></td>
-            <td><?php var_dump($this->getDbPresistenMode()) ?></td>
+            <td><?php echo $data['total_time']; ?></td>
+            <td><?php echo $data['avg_query_time']; ?></td>
+            <td><?php echo $data['num_queries']; ?></td>
+            <td><?php echo $data['num_rows']; ?></td>
+            <td><?php echo $data['num_changes']; ?></td>
+            <td><?php echo $this->getDbServerVersion(); ?></td>
+            <td><?php var_dump($this->getDbPresistenMode()); ?></td>
         </tr>
     </table>
     <br>
@@ -39,10 +41,10 @@ defined('BASE') or exit('No direct script access allowed');
         </tr>
     <?php foreach ($data['queries'] as $item): ?>
         <tr class="mono">
-            <td><?php echo $item['query'] ?></td>
-            <td><?php echo $item['time'] ?></td>
-            <td><pre><?php echo $item['rows'] ?></pre></td>
-            <td><pre><?php echo $item['changes'] ?></pre></td>
+            <td><?php echo $item['query']; ?></td>
+            <td><?php echo $item['time']; ?></td>
+            <td><pre><?php echo $item['rows']; ?></pre></td>
+            <td><pre><?php echo $item['changes']; ?></pre></td>
         </tr>
     <?php endforeach; ?>
     </table>

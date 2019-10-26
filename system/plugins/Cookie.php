@@ -76,9 +76,8 @@ class Cookie
                 $slices = explode($this->boundary, $_COOKIE[$name]);
                 if (md5($slices[0].$this->random) == $slices[1]) {
                     return $slices[0];
-                } else {
-                    return false;
                 }
+                return false;
             }
 
             return $_COOKIE[$name];

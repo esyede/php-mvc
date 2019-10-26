@@ -22,7 +22,7 @@ class Curl
     public function __construct()
     {
         if ($this->use_cookie) {
-            $this->cookie_file = storage_path('cache/curl_cookie.cache');
+            $this->cookie_file = storage_path('cache/curl-cookie.cache');
         }
 
         if (null == $this->user_agent) {

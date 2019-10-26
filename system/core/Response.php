@@ -70,9 +70,8 @@ class Response
             return trim($header[1]);
         } elseif (array_key_exists($key, $default)) {
             return $default[$key];
-        } else {
-            return false;
         }
+        return false;
     }
 
     public function setStatus($code)

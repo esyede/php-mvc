@@ -15,7 +15,7 @@ class Dashboard extends Controller
     {
         $title = 'dashboard';
         $content = 'This is your '.$title.' page';
-        
+
         $this->blade->render('auth.dashboard', compact('title', 'content'));
     }
 }

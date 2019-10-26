@@ -1,5 +1,7 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 ?>
 <span class="debugger-label" title="Database queries">
@@ -11,7 +13,7 @@ defined('BASE') or exit('No direct script access allowed');
 	    </g>
 	</svg>
 	<span class="tracy-label"><?php
-		$count = $this->getQueryCount();
-		echo $count.' / '.round($this->getTotalQueryTime(), 3, PHP_ROUND_HALF_UP).' ms'
-		?></span>
+        $count = $this->getQueryCount();
+        echo $count.' / '.round($this->getTotalQueryTime(), 3, PHP_ROUND_HALF_UP).' ms';
+        ?></span>
 </span>

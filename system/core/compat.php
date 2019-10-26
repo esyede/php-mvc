@@ -22,45 +22,31 @@ defined('PASSWORD_DEFAULT') or define('PASSWORD_DEFAULT', PASSWORD_BCRYPT);
 // New exception classes
 // ---------------------------------------------------------------
 if (! class_exists('Error', false)) {
-    class Error extends \Exception
-    {
-    }
+    class Error extends \Exception { }
 }
 
 if (! class_exists('AssertionError', false)) {
-    class AssertionError extends \Error
-    {
-    }
+    class AssertionError extends \Error { }
 }
 
 if (! class_exists('ParseError', false)) {
-    class ParseError extends \Error
-    {
-    }
+    class ParseError extends \Error { }
 }
 
 if (! class_exists('ArithmeticError', false)) {
-    class ArithmeticError extends \Error
-    {
-    }
+    class ArithmeticError extends \Error { }
 }
 
 if (! class_exists('DivisionByZeroError', false)) {
-    class DivisionByZeroError extends \ArithmeticError
-    {
-    }
+    class DivisionByZeroError extends \ArithmeticError { }
 }
 
 if (! class_exists('TypeError', false)) {
-    class TypeError extends \Error
-    {
-    }
+    class TypeError extends \Error { }
 }
 
 if (! class_exists('ArgumentCountError', false)) {
-    class ArgumentCountError extends \TypeError
-    {
-    }
+    class ArgumentCountError extends \TypeError { }
 }
 
 // ---------------------------------------------------------------
@@ -128,16 +114,10 @@ if (! function_exists('hash_pbkdf2')) {
         $hashLength = strlen(hash($algorithm, '', true));
         switch ($algorithm) {
             case 'sha224':
-            case 'sha256':
-                $blockSize = 64;
-                break;
+            case 'sha256': $blockSize = 64; break;
             case 'sha384':
-            case 'sha512':
-                $blockSize = 128;
-                break;
-            default:
-                $blockSize = $hashLength;
-                break;
+            case 'sha512': $blockSize = 128; break;
+            default: $blockSize = $hashLength; break;
         }
         if ($length < 1) {
             $length = $hashLength;
@@ -174,16 +154,8 @@ if (! function_exists('password_get_info')) {
     function password_get_info($hash)
     {
         return (strlen($hash) < 60 || 1 !== sscanf($hash, '$2y$%d', $hash))
-            ? [
-                'algo'     => 0,
-                'algoName' => 'unknown',
-                'options'  => [],
-            ]
-            : [
-                'algo'     => 1,
-                'algoName' => 'bcrypt',
-                'options'  => ['cost' => $hash],
-            ];
+            ? ['algo' => 0, 'algoName' => 'unknown', 'options' => []]
+            : ['algo' => 1, 'algoName' => 'bcrypt', 'options' => ['cost' => $hash]];
     }
 }
 
@@ -277,15 +249,9 @@ if (! is_callable('password_hash')) {
         }
 
         $opt['cost'] = empty($opt['cost']) ? 10 : $opt['cost'];
+        $text = sprintf('$2y$%02d$%s', $opt['cost'], $opt['salt']);
 
-        return (
-            60 === strlen(
-                $pwd = crypt(
-                    $pwd,
-                    sprintf('$2y$%02d$%s', $opt['cost'], $opt['salt'])
-                )
-            )
-        ) ? $pwd : false;
+        return (60 === strlen($pwd = crypt($pwd, $text))) ? $pwd : false;
     }
 }
 
@@ -329,7 +295,7 @@ if (! function_exists('ldap_escape')) {
     {
         static $char_maps = [
             LDAP_ESCAPE_FILTER => ['\\', '*', '(', ')', "\x00"],
-            LDAP_ESCAPE_DN     => ['\\', ',', '=', '+', '<', '>', ';', '"', '#'],
+            LDAP_ESCAPE_DN => ['\\', ',', '=', '+', '<', '>', ';', '"', '#'],
         ];
 
         if (! isset($char_maps[0])) {
@@ -504,9 +470,7 @@ if (! function_exists('error_clear_last')) {
         static $handler;
 
         if (! $handler) {
-            $handler = function () {
-                return false;
-            };
+            $handler = function () { return false; };
         }
         set_error_handler($handler);
         @trigger_error('');
@@ -586,13 +550,13 @@ if (! function_exists('php_os_family')) {
         }
 
         $map = [
-            'Darwin'    => 'Darwin',
+            'Darwin' => 'Darwin',
             'DragonFly' => 'BSD',
-            'FreeBSD'   => 'BSD',
-            'NetBSD'    => 'BSD',
-            'OpenBSD'   => 'BSD',
-            'Linux'     => 'Linux',
-            'SunOS'     => 'Solaris',
+            'FreeBSD' => 'BSD',
+            'NetBSD' => 'BSD',
+            'OpenBSD' => 'BSD',
+            'Linux' => 'Linux',
+            'SunOS' => 'Solaris',
         ];
 
         return isset($map[PHP_OS]) ? $map[PHP_OS] : 'Unknown';
@@ -850,17 +814,16 @@ if (! function_exists('get_mangled_object_vars')) {
         }
 
         if ($obj instanceof \ArrayIterator || $obj instanceof \ArrayObject) {
-            $reflector = new \ReflectionClass($obj instanceof \ArrayIterator
-                ? 'ArrayIterator'
-                : 'ArrayObject'
+            $reflector = new \ReflectionClass(
+                $obj instanceof \ArrayIterator ? 'ArrayIterator' : 'ArrayObject'
             );
 
             $flags = $reflector->getMethod('getFlags')->invoke($obj);
             $reflector = $reflector->getMethod('setFlags');
 
-            $reflector->invoke($obj, ($flags & \ArrayObject::STD_PROP_LIST)
-                ? 0
-                : \ArrayObject::STD_PROP_LIST
+            $reflector->invoke(
+                $obj,
+                ($flags & \ArrayObject::STD_PROP_LIST) ? 0 : \ArrayObject::STD_PROP_LIST
             );
 
             $arr = (array) $obj;

@@ -13,29 +13,29 @@ class Schema
     public $name;
     public $config;
     public $data_types = [
-        'BOOLEAN'    => ['mysql' => 'tinyint(1)', 'sqlite|pgsql' => 'BOOLEAN'],
-        'INT1'       => ['mysql' => 'tinyint(4)', 'sqlite' => 'integer(4)', 'pgsql' => 'smallint'],
-        'INT2'       => ['mysql' => 'smallint(6)', 'sqlite' => 'integer(6)', 'pgsql' => 'smallint'],
-        'INT4'       => ['mysql' => 'int(11)', 'sqlite' => 'integer(11)', 'pgsql' => 'integer'],
-        'INT8'       => ['mysql' => 'bigint(20)', 'sqlite' => 'integer(20)', 'pgsql' => 'bigint'],
-        'FLOAT'      => ['mysql|sqlite' => 'FLOAT', 'pgsql' => 'double precision'],
-        'DOUBLE'     => ['mysql' => 'decimal(18,6)', 'sqlite' => 'decimal(15,6)', 'pgsql' => 'numeric(18,6)'],
+        'BOOLEAN' => ['mysql' => 'tinyint(1)', 'sqlite|pgsql' => 'BOOLEAN'],
+        'INT1' => ['mysql' => 'tinyint(4)', 'sqlite' => 'integer(4)', 'pgsql' => 'smallint'],
+        'INT2' => ['mysql' => 'smallint(6)', 'sqlite' => 'integer(6)', 'pgsql' => 'smallint'],
+        'INT4' => ['mysql' => 'int(11)', 'sqlite' => 'integer(11)', 'pgsql' => 'integer'],
+        'INT8' => ['mysql' => 'bigint(20)', 'sqlite' => 'integer(20)', 'pgsql' => 'bigint'],
+        'FLOAT' => ['mysql|sqlite' => 'FLOAT', 'pgsql' => 'double precision'],
+        'DOUBLE' => ['mysql' => 'decimal(18,6)', 'sqlite' => 'decimal(15,6)', 'pgsql' => 'numeric(18,6)'],
         'VARCHAR128' => ['mysql|sqlite' => 'varchar(128)', 'pgsql' => 'character varying(128)'],
         'VARCHAR256' => ['mysql|sqlite' => 'varchar(255)', 'pgsql' => 'character varying(255)'],
         'VARCHAR512' => ['mysql|sqlite' => 'varchar(512)', 'pgsql' => 'character varying(512)'],
-        'TEXT'       => ['mysql|sqlite|pgsql' => 'text'],
-        'LONGTEXT'   => ['mysql' => 'LONGTEXT', 'sqlite|pgsql' => 'text'],
-        'DATE'       => ['mysql|sqlite|pgsql' => 'date'],
-        'DATETIME'   => ['mysql|sqlite' => 'datetime', 'pgsql' => 'timestamp without time zone'],
-        'TIMESTAMP'  => ['mysql' => 'timestamp', 'sqlite' => 'DATETIME', 'pgsql' => 'timestamp without time zone'],
-        'BLOB'       => ['mysql|sqlite' => 'blob', 'pgsql' => 'bytea'],
+        'TEXT' => ['mysql|sqlite|pgsql' => 'text'],
+        'LONGTEXT' => ['mysql' => 'LONGTEXT', 'sqlite|pgsql' => 'text'],
+        'DATE' => ['mysql|sqlite|pgsql' => 'date'],
+        'DATETIME' => ['mysql|sqlite' => 'datetime', 'pgsql' => 'timestamp without time zone'],
+        'TIMESTAMP' => ['mysql' => 'timestamp', 'sqlite' => 'DATETIME', 'pgsql' => 'timestamp without time zone'],
+        'BLOB' => ['mysql|sqlite' => 'blob', 'pgsql' => 'bytea'],
     ];
 
     public $default_types = [
         'CUR_STAMP' => [
-            'mysql'  => 'CURRENT_TIMESTAMP',
+            'mysql' => 'CURRENT_TIMESTAMP',
             'sqlite' => "(datetime('now','localtime'))",
-            'pgsql'  => 'LOCALTIMESTAMP(0)',
+            'pgsql' => 'LOCALTIMESTAMP(0)',
             ],
         ];
 
@@ -152,9 +152,9 @@ class Schema
     public function listTables()
     {
         $cmd = [
-            'mysql'  => ['SHOW TABLES'],
+            'mysql' => ['SHOW TABLES'],
             'sqlite' => ["SELECT name FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence'"],
-            'pgsql'  => ["select table_name from information_schema.tables where table_schema = 'public'"],
+            'pgsql' => ["select table_name from information_schema.tables where table_schema = 'public'"],
         ];
 
         $query = $this->findQuery($cmd);
@@ -188,7 +188,7 @@ class Schema
         $newName = $this->quoteKey($newName);
         $cmd = [
             'sqlite|pgsql' => "ALTER TABLE $name RENAME TO $newName;",
-            'mysql'        => "RENAME TABLE $name TO $newName;",
+            'mysql' => "RENAME TABLE $name TO $newName;",
         ];
 
         $query = $this->findQuery($cmd);
@@ -219,7 +219,7 @@ class Schema
 
         $cmd = [
             'mysql|pgsql' => 'TRUNCATE TABLE '.$this->quoteKey($name).';',
-            'sqlite'      => [
+            'sqlite' => [
                 'DELETE FROM '.$this->quoteKey($name).';',
                 // 'UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE name = '.$this->quoteKey($name).';',
             ],
@@ -280,11 +280,11 @@ class Schema
                 'field', 'type', 'defval', 'nullable', 'YES', 'pkey', 'PRIMARY KEY', ],
         ];
         $conv = [
-            'int\b|integer'                     => \PDO::PARAM_INT,
-            'bool'                              => \PDO::PARAM_BOOL,
-            'blob|bytea|image|binary'           => \PDO::PARAM_LOB,
+            'int\b|integer' => \PDO::PARAM_INT,
+            'bool' => \PDO::PARAM_BOOL,
+            'blob|bytea|image|binary' => \PDO::PARAM_LOB,
             'float|real|double|decimal|numeric' => 'float',
-            '.+'                                => \PDO::PARAM_STR,
+            '.+' => \PDO::PARAM_STR,
         ];
 
         $driver = $this->getDriver();
@@ -301,13 +301,13 @@ class Schema
                         }
 
                         $rows[$row[$val[1]]] = [
-                            'type'     => $row[$val[2]],
+                            'type' => $row[$val[2]],
                             'pdo_type' => $type,
-                            'default'  => is_string($row[$val[3]])
+                            'default' => is_string($row[$val[3]])
                                 ? preg_replace('/^\s*([\'"])(.*)\1\s*/', '\2', $row[$val[3]])
                                 : $row[$val[3]],
                             'nullable' => ($row[$val[4]] == $val[5]),
-                            'pkey'     => ($row[$val[6]] == $val[7]),
+                            'pkey' => ($row[$val[6]] == $val[7]),
                         ];
                     }
                 }
@@ -411,7 +411,7 @@ abstract class SchemaTableBuilder
 
         $cmd = [
             'pgsql|sqlite' => "CREATE $index $name ON $table ($cols);",
-            'mysql'        => "ALTER TABLE $table ADD $index $name ($cols);",
+            'mysql' => "ALTER TABLE $table ADD $index $name ($cols);",
         ];
 
         $query = $this->findQuery($cmd);
@@ -466,10 +466,10 @@ abstract class SchemaTableBuilder
                 $this->rebuild_command['pkeys'] = $pkeys;
 
                 return;
-            } else {
-                $table = $this->quoteKey($this->name);
-                $table_key = $this->quoteKey($this->name.'_pkey');
-                $cmd = [
+            }
+            $table = $this->quoteKey($this->name);
+            $table_key = $this->quoteKey($this->name.'_pkey');
+            $cmd = [
                     'mysql' => "ALTER TABLE $table DROP PRIMARY KEY, ADD PRIMARY KEY ( $pkString );",
                     'pgsql' => [
                         "ALTER TABLE $table DROP CONSTRAINT $table_key;",
@@ -477,14 +477,13 @@ abstract class SchemaTableBuilder
                     ],
                 ];
 
-                $query = $this->findQuery($cmd);
-                if (! is_array($query)) {
-                    $query = [$query];
-                }
+            $query = $this->findQuery($cmd);
+            if (! is_array($query)) {
+                $query = [$query];
+            }
 
-                foreach ($query as $q) {
-                    $this->queries[] = $q;
-                }
+            foreach ($query as $q) {
+                $this->queries[] = $q;
             }
         }
     }
@@ -632,9 +631,8 @@ class SchemaTableModifier extends SchemaTableBuilder
                 if (Schema::DF_CURRENT_TIMESTAMP === $column->default) {
                     $rebuild = true;
                     break;
-                } else {
-                    $sqlite_queries[] = "ALTER TABLE $table ADD $col_query;";
                 }
+                $sqlite_queries[] = "ALTER TABLE $table ADD $col_query;";
             } else {
                 $cmd = ['mysql|pgsql' => "ALTER TABLE $table ADD $col_query;"];
                 $this->queries[] = $this->findQuery($cmd);
@@ -826,35 +824,35 @@ class SchemaTableModifier extends SchemaTableBuilder
         $schema = $this->schema->getSchema($this->name, null, 0);
         if (! $types) {
             return array_keys($schema);
-        } else {
-            foreach ($schema as $name => &$cols) {
-                $default = ('' === $cols['default']) ? null : $cols['default'];
-                if (! is_null($default) && ((is_int(strpos(
-                    $curdef = strtolower(
-                        $this->findQuery($this->schema->default_types['CUR_STAMP'])
-                    ),
-                    strtolower($default)
-                ))
+        }
+        foreach ($schema as $name => &$cols) {
+            $default = ('' === $cols['default']) ? null : $cols['default'];
+            if (! is_null($default) && ((is_int(strpos(
+                $curdef = strtolower(
+                    $this->findQuery($this->schema->default_types['CUR_STAMP'])
+                ),
+                strtolower($default)
+            ))
                 || is_int(strpos(strtolower($default), $curdef)))
                 || "('now'::text)::timestamp(0) without time zone" == $default)) {
-                    $default = 'CUR_STAMP';
-                } elseif (! is_null($default)) {
-                    if (preg_match('/sqlite/', $this->schema->getDriver())) {
-                        $default = preg_replace('/^\s*([\'"])(.*)\1\s*$/', '\2', $default);
-                    } elseif (preg_match('/pgsql/', $this->schema->getDriver())) {
-                        if (is_int(strpos($default, 'nextval'))) {
-                            $default = null;
-                        } elseif (preg_match("/^\'*(.*)\'*::(\s*\w)+/", $default, $match)) {
-                            $default = $match[1];
-                        }
+                $default = 'CUR_STAMP';
+            } elseif (! is_null($default)) {
+                if (preg_match('/sqlite/', $this->schema->getDriver())) {
+                    $default = preg_replace('/^\s*([\'"])(.*)\1\s*$/', '\2', $default);
+                } elseif (preg_match('/pgsql/', $this->schema->getDriver())) {
+                    if (is_int(strpos($default, 'nextval'))) {
+                        $default = null;
+                    } elseif (preg_match("/^\'*(.*)\'*::(\s*\w)+/", $default, $match)) {
+                        $default = $match[1];
                     }
-                } else {
-                    $default = false;
                 }
-
-                $cols['default'] = $default;
+            } else {
+                $default = false;
             }
+
+            $cols['default'] = $default;
         }
+        
 
         return $schema;
     }
@@ -981,7 +979,7 @@ class SchemaTableModifier extends SchemaTableBuilder
         $table = $this->quoteKey($this->name);
         $cmd = [
             'pgsql|sqlite' => "DROP INDEX $name;",
-            'mysql'        => "ALTER TABLE $table DROP INDEX $name;",
+            'mysql' => "ALTER TABLE $table DROP INDEX $name;",
         ];
 
         $query = $this->findQuery($cmd);
@@ -993,8 +991,8 @@ class SchemaTableModifier extends SchemaTableBuilder
         $table = $this->quoteKey($this->name);
         $cmd = [
             'sqlite' => "PRAGMA index_list($table);",
-            'mysql'  => "SHOW INDEX FROM $table;",
-            'pgsql'  => 'select i.relname as name, ix.indisunique as unique '.
+            'mysql' => "SHOW INDEX FROM $table;",
+            'pgsql' => 'select i.relname as name, ix.indisunique as unique '.
                 'from pg_class t, pg_class i, pg_index ix '.
                 'where t.oid = ix.indrelid and i.oid = ix.indexrelid '.
                 "and t.relkind = 'r' and t.relname = '$this->name'".
@@ -1268,9 +1266,8 @@ class Column
                     );
 
                     throw new \Exception($message);
-                } else {
-                    $this->type_value = $this->type;
                 }
+                $this->type_value = $this->type;
             }
         }
 
@@ -1318,13 +1315,13 @@ class Column
             }
 
             return $this->findQuery($this->schema->default_types[strtoupper($this->default)]);
-        } else {
-            $typeValue = $this->getTypeValue();
-            $pdo_type = preg_match('/int|bool/i', $typeValue, $parts)
+        }
+        $typeValue = $this->getTypeValue();
+        $pdo_type = preg_match('/int|bool/i', $typeValue, $parts)
                 ? constant('\PDO::PARAM_'.strtoupper($parts[0]))
                 : \PDO::PARAM_STR;
 
-            return null === $this->default
+        return null === $this->default
                 ? 'NULL'
                 : $this->db->quote(
                     htmlspecialchars(
@@ -1334,7 +1331,6 @@ class Column
                     ),
                     $pdo_type
                 );
-        }
     }
 }
 

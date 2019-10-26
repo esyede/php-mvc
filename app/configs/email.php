@@ -12,5 +12,5 @@ return [
     // Password
     'password' => '',
     // Charset
-    'charset'  => 'UTF-8',
+    'charset' => 'UTF-8',
 ];

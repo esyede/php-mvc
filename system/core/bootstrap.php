@@ -55,8 +55,8 @@ if (! function_exists('notfound')) {
     function notfound()
     {
         $message = "We're sorry! The page you have requested ".
-            "cannot be found on this server. ".
-            "The page may be deleted or no longer exists.";
+            'cannot be found on this server. '.
+            'The page may be deleted or no longer exists.';
         show_error($message, 404);
     }
 }
@@ -110,16 +110,6 @@ if (! function_exists('bd')) {
     }
 }
 
-// Convenient way to escape view variables
-if (! function_exists('e')) {
-    function e($str, $charset = null)
-    {
-        $charset = is_null($charset) ? 'UTF-8' : $charset;
-
-        return htmlspecialchars($str, ENT_QUOTES, $charset);
-    }
-}
-
 if (! function_exists('blank')) {
     function blank($value)
     {
@@ -128,7 +118,7 @@ if (! function_exists('blank')) {
         }
 
         if (is_string($value)) {
-            return '' === trim($value);
+            return ('' === trim($value));
         }
 
         if (is_numeric($value) || is_bool($value)) {
@@ -136,7 +126,7 @@ if (! function_exists('blank')) {
         }
 
         if ($value instanceof \Countable) {
-            return 0 === count($value);
+            return (0 === count($value));
         }
 
         return empty($value);
@@ -147,7 +137,17 @@ if (! function_exists('blank')) {
 if (! function_exists('filled')) {
     function filled($value)
     {
-        return ! blank($value);
+        return (! blank($value));
+    }
+}
+
+// Convenient way to escape view variables
+if (! function_exists('e')) {
+    function e($str, $charset = null)
+    {
+        $charset = blank($charset) ? 'UTF-8' : $charset;
+
+        return htmlspecialchars($str, ENT_QUOTES, $charset);
     }
 }
 
@@ -160,7 +160,7 @@ if (! function_exists('create_folder')) {
         if (! mkdir($path, $chmod, true)) {
             return false;
         }
-        
+
         @touch(rtrim($path, DS).DS.'index.html');
         umask($mask);
 

@@ -16,7 +16,8 @@ class DefaultBarPanel implements BarPanelInterface
 
     public function getTab()
     {
-        ob_start(function () { });
+        ob_start(function () {
+        });
 
         $data = $this->data;
         require __DIR__.DS.'assets'.DS.'Bar'.DS.$this->id.'.tab.php';
@@ -26,7 +27,8 @@ class DefaultBarPanel implements BarPanelInterface
 
     public function getPanel()
     {
-        ob_start(function () { });
+        ob_start(function () {
+        });
 
         if (is_file(__DIR__.DS.'assets'.DS.'Bar'.DS.$this->id.'.panel.php')) {
             $data = $this->data;

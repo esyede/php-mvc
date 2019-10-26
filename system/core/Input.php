@@ -103,7 +103,7 @@ class Input
 
         do {
             // Remove really unwanted tags
-            $old_data = $data;
+            $old = $data;
             $data = preg_replace(
                 '#</*(?:applet|b(?:ase|gsound|link)'.
                 '|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)'.
@@ -111,7 +111,7 @@ class Input
                 '',
                 $data
             );
-        } while ($old_data !== $data);
+        } while ($old !== $data);
 
         return $data;
     }
@@ -137,14 +137,11 @@ class Input
 
         if (isset($array[$index])) {
             $value = $array[$index];
-        }
-        // Does the index contains array notation?
-        elseif (($count = preg_match_all('/(?:^[^\[]+)|\[[^]]*\]/', $index, $matches)) > 1) {
+        } elseif (($count = preg_match_all('/(?:^[^\[]+)|\[[^]]*\]/', $index, $matches)) > 1) {
             $value = $array;
             for ($i = 0; $i < $count; ++$i) {
                 $key = trim($matches[0][$i], '[]');
-                // Empty notation will return the value as array
-                if ('' === $key) {
+                if (blank($key)) {
                     break;
                 }
 

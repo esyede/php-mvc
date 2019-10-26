@@ -21,16 +21,15 @@ class Login extends Controller
                 redirect('auth/dashboard');
             }
         }
-        
+
         $data = [
-            'title' => 'Auth Login',
+            'title' => 'Login',
             'content' => 'Please fill to login',
             'form' => plugin('form'),
         ];
 
         $this->blade->render('auth.login', $data);
     }
-
 
     public function logout()
     {

@@ -1,4 +1,5 @@
 <?php
+
 defined('BASE') or exit('No direct script access allowed');
 
 class Auth
@@ -15,7 +16,6 @@ class Auth
     public $permissions = null;
     public $authenticated = false;
 
-
     public function __construct()
     {
         $this->load = get_instance();
@@ -23,7 +23,6 @@ class Auth
         $this->init();
     }
 
-    
     protected function init()
     {
         $this->db = $this->load->database();
@@ -39,16 +38,15 @@ class Auth
         return $this;
     }
 
-
     public function login($username, $password)
     {
         if ($this->validate($username, $password)) {
             $this->user = $this->credentials($username, $password);
             if ($this->user) {
                 return $this->setUser();
-            } else {
-                return $this->error();
             }
+
+            return $this->errors();
         }
 
         return false;
@@ -66,13 +64,12 @@ class Auth
 
             bd($_SESSION, 'Session');
             bd(get_segments(), 'get_segments');
-            
+
             return true;
         }
 
         return false;
     }
-
 
     protected function credentials($username, $password)
     {
@@ -86,7 +83,7 @@ class Auth
             ->where('deleted_at IS NULL')
             ->where($where)
             ->one();
-        
+
         if (filled($user) && password_verify($password, $user['password'])) {
             $this->authenticated = true;
 
@@ -94,19 +91,18 @@ class Auth
         }
 
         $this->authenticated = false;
-        
+
         return false;
     }
-
 
     protected function setUser()
     {
         $this->user_id = $this->user['id'];
         $data = [
-            'user_id'       => $this->user['id'],
-            'username'      => $this->user['username'],
-            'roles'         => $this->userWiseRoles(),
-            'authenticated' => true
+            'user_id' => $this->user['id'],
+            'username' => $this->user['username'],
+            'roles' => $this->userWiseRoles(),
+            'authenticated' => true,
         ];
 
         $this->session->set($data);
@@ -114,18 +110,17 @@ class Auth
         redirect('auth/dashboard');
     }
 
-
-    protected function error()
+    protected function errors()
     {
-        return $this->authenticated() ? [] : ['Incorrect username and/or password'];
-    }
+        $lang = get_instance()->language('auth');
 
+        return $this->authenticated() ? [] : [$lang['error_credentials']];
+    }
 
     public function authenticated()
     {
-        return (true === $this->authenticated);
+        return (false !== $this->authenticated);
     }
-
 
     public function authenticate()
     {
@@ -135,7 +130,6 @@ class Auth
 
         return true;
     }
-
 
     public function check($methods = null)
     {
@@ -147,39 +141,34 @@ class Auth
                 }
             }
         }
+
         return $this->authenticate();
     }
-
 
     public function guest()
     {
         return ! $this->authenticated();
     }
 
-
     public function userId()
     {
         return $this->user_id;
     }
-
 
     public function username()
     {
         return $this->username;
     }
 
-
     public function roles()
     {
         return $this->roles;
     }
 
-
     public function permissions()
     {
         return $this->permissions;
     }
-
 
     protected function userWiseRoles()
     {
@@ -195,15 +184,14 @@ class Auth
         }, $query);
     }
 
-
     public function userRoles()
     {
         $where = [
             'roles_users.user_id' => $this->userId(),
             'roles.status' => 1,
-            'deleted_at' => null
+            'deleted_at' => null,
         ];
-        
+
         $query = $this->db
             ->from('roles')
             ->join('roles_users', ['roles.id' => 'roles_users.role_id'])
@@ -216,32 +204,31 @@ class Auth
         }, $query);
     }
 
-
     public function userPermissions()
     {
         $where = ['permissions.status' => 1, 'deleted_at' => null];
-
+        $join = ['permissions.id' => 'permission_roles.permission_id'];
+        
         $query = $this->db
             ->from('permissions')
-            ->join('permission_roles', ['permissions.id' => 'permission_roles.permission_id'])
+            ->join('permission_roles', $join)
             ->where('permission_roles.role_id @', (array) $this->roles())
             ->where($where)
             ->groupBy('permission_roles.permission_id')
             ->select()
             ->execute();
 
-
         return array_map(function ($item) {
             return $item['name'];
         }, $query);
     }
 
-
     public function only(array $methods = [])
     {
         if (is_array($methods) && count(is_array($methods))) {
+            $segment = get_segments();
             foreach ($methods as $method) {
-                if ($method == (is_null(get_segments(2)) ? 'index' : get_segments(2))) {
+                if ($method == (is_null($segment[2]) ? 'index' : $segment[2])) {
                     return $this->guarded();
                 }
             }
@@ -250,12 +237,12 @@ class Auth
         return true;
     }
 
-
     public function except(array $methods = [])
     {
         if (is_array($methods) && count(is_array($methods))) {
+            $segment = get_segments();
             foreach ($methods as $method) {
-                if ($method == (is_null(get_segments(2)) ? 'index' : get_segments(2))) {
+                if ($method == (is_null($segment[2]) ? 'index' : $segment[2])) {
                     return true;
                 }
             }
@@ -263,7 +250,6 @@ class Auth
 
         return $this->guarded();
     }
-
 
     public function guarded()
     {
@@ -277,7 +263,6 @@ class Auth
         return notfound();
     }
 
-
     public function hasRole($roles, $requireAll = false)
     {
         if (is_array($roles)) {
@@ -288,20 +273,17 @@ class Auth
                     return false;
                 }
             }
-        }
-        else {
+        } else {
             return $this->checkRole($roles);
         }
 
         return $requireAll;
     }
 
-
     public function checkRole($role)
     {
         return in_array($role, $this->userRoles());
     }
-
 
     public function can($permissions, $requireAll = false)
     {
@@ -313,26 +295,22 @@ class Auth
                     return false;
                 }
             }
-        }
-        else {
+        } else {
             return $this->checkPermission($permissions);
         }
 
         return $requireAll;
     }
 
-
     public function cannot($permissions, $requireAll = false)
     {
-        return (false === $this->can($permissions, $requireAll));
+        return false === $this->can($permissions, $requireAll);
     }
-
 
     public function checkPermission($permission)
     {
         return in_array($permission, $this->userPermissions());
     }
-
 
     public function logout()
     {

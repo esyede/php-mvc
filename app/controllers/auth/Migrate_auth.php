@@ -12,14 +12,13 @@ class Migrate_auth extends Controller
     public function index()
     {
         $this->load->plugin('migration');
-        
+
         if ($this->migration->current()) {
             $this->seedUsersTable();
         } else {
-            show_error($this->migration->error());
+            show_error($this->migration->errors());
         }
     }
-
 
     private function seedUsersTable()
     {

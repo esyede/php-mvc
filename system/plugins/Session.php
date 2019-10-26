@@ -22,7 +22,7 @@ class Session
                     \Debugger\Debugger::dispatch();
                 }
             }
-            
+
             @session_start();
             $this->set('session_hash', $this->generateHash());
         } else {
@@ -49,9 +49,8 @@ class Session
     {
         if (is_null($key)) {
             return $_SESSION;
-        } else {
-            return $this->has($_SESSION[$key]) ? $_SESSION[$key] : false;
         }
+        return $this->has($_SESSION[$key]) ? $_SESSION[$key] : false;
     }
 
     public function has($key)

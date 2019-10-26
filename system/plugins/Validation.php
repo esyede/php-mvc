@@ -69,9 +69,8 @@ class Validation
                     if (! $all) {
                         $cond = true;
                         break;
-                    } else {
-                        ++$empty;
                     }
+                    ++$empty;
                 }
             }
             if ($all && $empty === count($required)) {
@@ -98,9 +97,8 @@ class Validation
                     if (! $all) {
                         $cond = true;
                         break;
-                    } else {
-                        ++$filled;
                     }
+                    ++$filled;
                 }
             }
             if ($all && $filled === count($required)) {
@@ -273,28 +271,27 @@ class Validation
 
     protected function _contains_unique($key, $val)
     {
-        return is_array($val)
-            ? ($val === array_unique($val, SORT_REGULAR)) : false;
+        return is_array($val) ? ($val === array_unique($val, SORT_REGULAR)) : false;
     }
 
     protected function _ip($key, $val)
     {
-        return false !== filter_var($val, FILTER_VALIDATE_IP);
+        return (false !== filter_var($val, FILTER_VALIDATE_IP));
     }
 
     protected function _ipv4($key, $val)
     {
-        return false !== filter_var($val, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+        return (false !== filter_var($val, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4));
     }
 
     protected function _ipv6($key, $val)
     {
-        return false !== filter_var($val, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
+        return (false !== filter_var($val, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6));
     }
 
     protected function _email($key, $val)
     {
-        return false !== filter_var($val, FILTER_VALIDATE_EMAIL);
+        return (false !== filter_var($val, FILTER_VALIDATE_EMAIL));
     }
 
     protected function _ascii($key, $val)
@@ -323,7 +320,7 @@ class Validation
         $schemes = ['http://', 'https://', 'ftp://'];
         foreach ($schemes as $scheme) {
             if (false !== strpos($val, $scheme)) {
-                return false !== filter_var($val, FILTER_VALIDATE_URL);
+                return (false !== filter_var($val, FILTER_VALIDATE_URL));
             }
         }
 
@@ -358,8 +355,7 @@ class Validation
 
     protected function _slug($key, $val)
     {
-        return (! is_array($val))
-            ? preg_match('/^([-a-z0-9_-])+$/i', $val) : false;
+        return (! is_array($val)) ? preg_match('/^([-a-z0-9_-])+$/i', $val) : false;
     }
 
     protected function _regex($key, $val, $args)
@@ -369,8 +365,7 @@ class Validation
 
     protected function _date($key, $val)
     {
-        return ($val instanceof \DateTime)
-            ? true : (false !== strtotime($val));
+        return ($val instanceof \DateTime) ? true : (false !== strtotime($val));
     }
 
     protected function _date_format($key, $val, $args)
@@ -385,7 +380,7 @@ class Validation
         $time1 = ($val instanceof \DateTime) ? $val->getTimestamp() : strtotime($val);
         $time2 = ($args[0] instanceof \DateTime) ? $args[0]->getTimestamp() : strtotime($args[0]);
 
-        return $time1 < $time2;
+        return ($time1 < $time2);
     }
 
     protected function _date_after($key, $val, $args)
@@ -393,7 +388,7 @@ class Validation
         $time1 = ($val instanceof \DateTime) ? $val->getTimestamp() : strtotime($val);
         $time2 = ($args[0] instanceof \DateTime) ? $args[0]->getTimestamp() : strtotime($args[0]);
 
-        return $time1 > $time2;
+        return ($time1 > $time2);
     }
 
     protected function _boolean($key, $val)
@@ -436,42 +431,41 @@ class Validation
                 $sum += $sub;
             }
 
-            return $sum > 0 && (0 == $sum % 10);
+            return ($sum > 0 && (0 == $sum % 10));
         };
 
         if ($luhn()) {
             if (! isset($cards)) {
                 return true;
-            } else {
-                $patterns = [
-                    'visa'       => '~^4[0-9]{12}(?:[0-9]{3})?$~',
+            }
+            $patterns = [
+                    'visa' => '~^4[0-9]{12}(?:[0-9]{3})?$~',
                     'mastercard' => '~^(5[1-5]|2[2-7])[0-9]{14}$~',
-                    'amex'       => '~^3[47][0-9]{13}$~',
+                    'amex' => '~^3[47][0-9]{13}$~',
                     'dinersclub' => '~^3(?:0[0-5]|[68][0-9])[0-9]{11}$~',
-                    'discover'   => '~^6(?:011|5[0-9]{2})[0-9]{12}$~',
+                    'discover' => '~^6(?:011|5[0-9]{2})[0-9]{12}$~',
                 ];
 
-                if (isset($type)) {
-                    // Tidak cocok
-                    if (! isset($cards) && ! in_array($type, array_keys($patterns))) {
-                        return false;
-                    }
+            if (isset($type)) {
+                // Tidak cocok
+                if (! isset($cards) && ! in_array($type, array_keys($patterns))) {
+                    return false;
+                }
 
-                    return 1 === preg_match($patterns[$type], $val);
-                } elseif (isset($cards)) {
-                    // Cocok
-                    foreach ($cards as $card) {
-                        if (in_array($card, array_keys($patterns))
+                return 1 === preg_match($patterns[$type], $val);
+            } elseif (isset($cards)) {
+                // Cocok
+                foreach ($cards as $card) {
+                    if (in_array($card, array_keys($patterns))
                         && (1 === preg_match($patterns[$card], $val))) {
-                            return true;
-                        }
+                        return true;
                     }
-                } else {
-                    // Loop semua polanya
-                    foreach ($patterns as $regex) {
-                        if (1 === preg_match($regex, $val)) {
-                            return true;
-                        }
+                }
+            } else {
+                // Loop semua polanya
+                foreach ($patterns as $regex) {
+                    if (1 === preg_match($regex, $val)) {
+                        return true;
                     }
                 }
             }
@@ -547,10 +541,10 @@ class Validation
                 ? $arg->format('Y-m-d')
                 : (is_object($arg) ? get_class($arg) : $arg);
             // END TODO
-            if (is_string($args[0])
-            && isset($this->labels[$arg])) {
+            if (is_string($args[0]) && isset($this->labels[$arg])) {
                 $arg = $this->labels[$arg];
             }
+
             $arr[] = $arg;
         }
         $this->errors[$key][] = vsprintf($msg, $arr);
@@ -613,23 +607,23 @@ class Validation
         foreach ($this->validations as $v) {
             foreach ($v['keys'] as $key) {
                 list($vals, $multi) = $this->get_part($this->keys, explode('.', $key), false);
-                if ($this->rule_exists('optional', $key) && isset($vals)
-                || ($this->rule_exists('required_with', $key)
-                || $this->rule_exists('required_without', $key))) {
+                if ($this->hasRule('optional', $key) && isset($vals)
+                || ($this->hasRule('required_with', $key)
+                || $this->hasRule('required_without', $key))) {
                     // Jangan lakukan apapun..
                 } elseif (! in_array($v['rule'], ['required', 'accepted'])
-                && ! $this->rule_exists('required', $key)
+                && ! $this->hasRule('required', $key)
                 && (! isset($vals) || '' === $vals || ($multi && 0 == count($vals)))) {
                     continue;
                 }
 
-                $errors = $this->get_rules();
+                $errors = $this->listRules();
                 $callback = isset($errors[$v['rule']])
                     ? $errors[$v['rule']] : [$this, '_'.$v['rule']];
 
                 if (! $multi) {
                     $vals = [$vals];
-                } elseif (! $this->rule_exists('required', $key)) {
+                } elseif (! $this->hasRule('required', $key)) {
                     $vals = array_filter($vals);
                 }
 
@@ -661,17 +655,17 @@ class Validation
         $this->bail = (bool) $bail;
     }
 
-    protected function get_rules()
+    protected function listRules()
     {
         return array_merge($this->child_rules, static::$rules);
     }
 
-    protected function get_messages()
+    protected function listMessages()
     {
         return array_merge($this->child_messages, $this->messages);
     }
 
-    protected function rule_exists($name, $key)
+    protected function hasRule($name, $key)
     {
         foreach ($this->validations as $v) {
             if (($v['rule'] == $name) && in_array($key, $v['keys'])) {
@@ -690,15 +684,15 @@ class Validation
         }
     }
 
-    public static function extend($name, $callback, $msg = null)
+    public function extend($name, $callback, $msg = null)
     {
-        $msg = ! is_null($msg) ? $msg : 'Invalid';
+        $msg = blank($msg) ? 'Invalid' : $msg;
         static::assert($callback);
         static::$rules[$name] = $callback;
         $this->messages[$name] = $msg;
     }
 
-    public function extend_child($name, $callback, $msg = null)
+    public function extendChild($name, $callback, $msg = null)
     {
         static::assert($callback);
         $this->child_rules[$name] = $callback;
@@ -713,18 +707,18 @@ class Validation
 
         $org = $keys.'_rule';
         $name = $org;
-        $rules = $this->get_rules();
+        $rules = $this->listRules();
 
         while (isset($rules[$name])) {
-            $name = $org.'_'.rand(0, 10000);
+            $name = $org.'_'.mt_rand(0, 10000);
         }
 
         return $name;
     }
 
-    public function validator_exists($name)
+    public function hasValidator($name)
     {
-        $rules = $this->get_rules();
+        $rules = $this->listRules();
 
         return method_exists($this, '_'.$name) || isset($rules[$name]);
     }
@@ -734,14 +728,14 @@ class Validation
         $args = array_slice(func_get_args(), 2);
         if (is_callable($rule)
         && (! is_string($rule)
-        && $this->validator_exists($rule))) {
+        && $this->hasValidator($rule))) {
             $name = $this->unique($keys);
             $msg = isset($args[0]) ? $args[0] : null;
-            $this->extend_child($name, $rule, $msg);
+            $this->extendChild($name, $rule, $msg);
             $rule = $name;
         }
 
-        $errors = $this->get_rules();
+        $errors = $this->listRules();
         if (! isset($errors[$rule])) {
             $mtd = '_'.$rule;
             if (! method_exists($this, $mtd)) {
@@ -751,7 +745,7 @@ class Validation
             }
         }
 
-        $msgs = $this->get_messages();
+        $msgs = $this->listMessages();
         $msg = isset($msgs[$rule]) ? $msgs[$rule] : 'Invalid';
         $nolabel = (false === mb_strpos($msg, '{key}'));
 
@@ -763,7 +757,7 @@ class Validation
             'rule' => $rule,
             'keys' => (array) $keys,
             'args' => (array) $args,
-            'msg'  => $msg,
+            'msg' => $msg,
         ];
 
         return $this;

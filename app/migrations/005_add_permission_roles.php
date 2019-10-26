@@ -2,10 +2,9 @@
 
 defined('BASE') or exit('No direct script access allowed');
 
-
 class Migration_add_permission_roles extends Migration
 {
-	public function up()
+    public function up()
     {
         $table = $this->schema->createTable('permission_roles');
         $table->addColumn('role_id')->int(11)->nullable(false)->index(true);
@@ -14,7 +13,6 @@ class Migration_add_permission_roles extends Migration
         $table->build();
     }
 
-    
     public function down()
     {
         $this->schema->dropTable('permission_roles');

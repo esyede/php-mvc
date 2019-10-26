@@ -1,39 +1,47 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 ?>
 
-<?php ob_start() ?>
+<?php ob_start(); ?>
 &nbsp;
 
 <style id="debugger-debug-style" class="debugger-debug">
-<?php readfile(__DIR__.'/bar.css') ?>
-<?php readfile(__DIR__.'/../Dumper/dumper.css') ?>
+<?php readfile(__DIR__.'/bar.css'); ?>
+<?php readfile(__DIR__.'/../Dumper/dumper.css'); ?>
 </style>
 
 <script id="debugger-debug-script">
-<?php readfile(__DIR__.'/bar.js') ?>
-<?php readfile(__DIR__.'/../Dumper/dumper.js') ?>
+<?php readfile(__DIR__.'/bar.js'); ?>
+<?php readfile(__DIR__.'/../Dumper/dumper.js'); ?>
 </script>
 
 
-<?php foreach ($panels as $panel): if (!empty($panel['previous'])) continue ?>
-	<div class="debugger-panel" id="debugger-debug-panel-<?php echo $panel['id'] ?>">
-		<?php if ($panel['panel']): echo $panel['panel'] ?>
+<?php foreach ($panels as $panel): if (! empty($panel['previous'])) {
+    continue;
+} ?>
+	<div class="debugger-panel" id="debugger-debug-panel-<?php echo $panel['id']; ?>">
+		<?php if ($panel['panel']): echo $panel['panel']; ?>
 		<div class="debugger-icons">
 			<a href="#" title="open in window">&curren;</a>
 			<a href="#" rel="close" title="close window">&times;</a>
 		</div>
-		<?php endif ?>
+		<?php endif; ?>
 	</div>
-<?php endforeach ?>
+<?php endforeach; ?>
 
 <div id="debugger-debug-bar">
 	<ul>
-		<?php foreach ($panels as $panel): if (!$panel['tab']) continue; ?>
-		<?php if (!empty($panel['previous'])) echo '</ul><ul class="debugger-previous">'; ?>
-		<li><?php if ($panel['panel']): ?><a href="#" rel="<?php echo $panel['id'] ?>"><?php echo trim($panel['tab']) ?></a><?php else: echo '<span>', trim($panel['tab']), '</span>'; endif ?></li>
-		<?php endforeach ?>
+		<?php foreach ($panels as $panel): if (! $panel['tab']) {
+    continue;
+} ?>
+		<?php if (! empty($panel['previous'])) {
+    echo '</ul><ul class="debugger-previous">';
+} ?>
+		<li><?php if ($panel['panel']): ?><a href="#" rel="<?php echo $panel['id']; ?>"><?php echo trim($panel['tab']); ?></a><?php else: echo '<span>', trim($panel['tab']), '</span>'; endif; ?></li>
+		<?php endforeach; ?>
 		<li><a href="#" rel="close" title="close debug bar">&times;</a></li>
 	</ul>
 </div>
@@ -50,13 +58,13 @@ defined('BASE') or exit('No direct script access allowed');
 	window.addEventListener('DOMContentLoaded', function() {
 		var debug = document.body.appendChild(document.createElement('div'));
 		debug.id = 'debugger-debug';
-		debug.innerHTML = <?php echo json_encode(Helpers::fixEncoding($output)) ?>;
+		debug.innerHTML = <?php echo json_encode(Helpers::fixEncoding($output)); ?>;
 		for (var i = 0, scripts = debug.getElementsByTagName('script'); i < scripts.length; i++) {
 			(window.execScript || function(data) {
 				window['eval'].call(window, data);
 			})(scripts[i].innerHTML);
 		}
-		Debugger.Dumper.init(<?php echo json_encode($liveData) ?>);
+		Debugger.Dumper.init(<?php echo json_encode($liveData); ?>);
 		Debugger.Debug.init();
 		debug.style.display = 'block';
 	});

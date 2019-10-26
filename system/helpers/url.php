@@ -60,13 +60,11 @@ if (! function_exists('get_segments')) {
         $segments = explode('/', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'));
         if (is_null($index)) {
             return $segments;
-        } else {
-            if (array_key_exists($index, $segments)) {
-                return $segments[$index];
-            } else {
-                return false;
-            }
         }
+        if (array_key_exists($index, $segments)) {
+            return $segments[$index];
+        }
+        return false;
     }
 }
 
@@ -89,13 +87,13 @@ if (! function_exists('redirect')) {
             $method = 'refresh';
         } elseif ('refresh' !== $method && (blank($code) || ! is_numeric($code))) {
             if (isset($_SERVER['SERVER_PROTOCOL'], $_SERVER['REQUEST_METHOD'])
-            && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.1') {
-                $code = ($_SERVER['REQUEST_METHOD'] !== 'GET') ? 303 : 307;
+            && 'HTTP/1.1' === $_SERVER['SERVER_PROTOCOL']) {
+                $code = ('GET' !== $_SERVER['REQUEST_METHOD']) ? 303 : 307;
             } else {
                 $code = 302;
             }
         }
-        
+
         switch ($method) {
             case 'refresh':
                 header('Refresh:0;url='.$uri);
@@ -114,43 +112,43 @@ if (! function_exists('get_mime')) {
     {
         if (preg_match('/\w+$/', $file, $ext)) {
             $mimes = [
-                'au'         => 'audio/basic',
-                'avi'        => 'video/avi',
-                'bmp'        => 'image/bmp',
-                'bz2'        => 'application/x-bzip2',
-                'css'        => 'text/css',
-                'dtd'        => 'application/xml-dtd',
-                'doc'        => 'application/msword',
-                'gif'        => 'image/gif',
-                'gz'         => 'application/x-gzip',
-                'hqx'        => 'application/mac-binhex40',
-                'html?'      => 'text/html',
-                'jar'        => 'application/java-archive',
-                'jpe?g|jfif?'=> 'image/jpeg',
-                'js'         => 'application/x-javascript',
-                'midi'       => 'audio/x-midi',
-                'mp3'        => 'audio/mpeg',
-                'mpe?g'      => 'video/mpeg',
-                'ogg'        => 'audio/vorbis',
-                'pdf'        => 'application/pdf',
-                'png'        => 'image/png',
-                'ppt'        => 'application/vnd.ms-powerpoint',
-                'ps'         => 'application/postscript',
-                'qt'         => 'video/quicktime',
-                'ram?'       => 'audio/x-pn-realaudio',
-                'rdf'        => 'application/rdf',
-                'rtf'        => 'application/rtf',
-                'sgml?'      => 'text/sgml',
-                'sit'        => 'application/x-stuffit',
-                'svg'        => 'image/svg+xml',
-                'swf'        => 'application/x-shockwave-flash',
-                'tgz'        => 'application/x-tar',
-                'tiff'       => 'image/tiff',
-                'txt'        => 'text/plain',
-                'wav'        => 'audio/wav',
-                'xls'        => 'application/vnd.ms-excel',
-                'xml'        => 'application/xml',
-                'zip'        => 'application/x-zip-compressed',
+                'au' => 'audio/basic',
+                'avi' => 'video/avi',
+                'bmp' => 'image/bmp',
+                'bz2' => 'application/x-bzip2',
+                'css' => 'text/css',
+                'dtd' => 'application/xml-dtd',
+                'doc' => 'application/msword',
+                'gif' => 'image/gif',
+                'gz' => 'application/x-gzip',
+                'hqx' => 'application/mac-binhex40',
+                'html?' => 'text/html',
+                'jar' => 'application/java-archive',
+                'jpe?g|jfif?' => 'image/jpeg',
+                'js' => 'application/x-javascript',
+                'midi' => 'audio/x-midi',
+                'mp3' => 'audio/mpeg',
+                'mpe?g' => 'video/mpeg',
+                'ogg' => 'audio/vorbis',
+                'pdf' => 'application/pdf',
+                'png' => 'image/png',
+                'ppt' => 'application/vnd.ms-powerpoint',
+                'ps' => 'application/postscript',
+                'qt' => 'video/quicktime',
+                'ram?' => 'audio/x-pn-realaudio',
+                'rdf' => 'application/rdf',
+                'rtf' => 'application/rtf',
+                'sgml?' => 'text/sgml',
+                'sit' => 'application/x-stuffit',
+                'svg' => 'image/svg+xml',
+                'swf' => 'application/x-shockwave-flash',
+                'tgz' => 'application/x-tar',
+                'tiff' => 'image/tiff',
+                'txt' => 'text/plain',
+                'wav' => 'audio/wav',
+                'xls' => 'application/vnd.ms-excel',
+                'xml' => 'application/xml',
+                'zip' => 'application/x-zip-compressed',
             ];
 
             foreach ($mimes as $key => $value) {

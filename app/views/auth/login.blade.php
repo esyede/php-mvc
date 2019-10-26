@@ -1,10 +1,12 @@
 @extends('shared.layout')
+
+@section('login-form')
 	{!!
 		$form->init('login', ['action' => site('auth/login'), 'method' => 'post'])
-			->label('Username')->newline()
-			->input('username')->newline()
-			->label('Password')->newline()
-			->input('password', 'password')->newline()
+			->label('username', 'Your username')->newline()
+			->input('username')->newline()->newline()
+			->label('password', 'Your password')->newline()
+			->input('password', 'password')->newline()->newline()
 			->submit('login', 'Login')
 			->reset('reset', 'Reset')
 			->render();

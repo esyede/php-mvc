@@ -1,5 +1,7 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 ?>
 <style class="debugger-debug">
@@ -17,9 +19,9 @@ defined('BASE') or exit('No direct script access allowed');
 <div class="debugger-inner debugger-DumpPanel">
 <?php foreach ($data as $item): ?>
 	<?php if ($item['title']):?>
-	<h2><?php echo htmlspecialchars($item['title'], ENT_NOQUOTES, 'UTF-8') ?></h2>
-	<?php endif ?>
+	<h2><?php echo htmlspecialchars($item['title'], ENT_NOQUOTES, 'UTF-8'); ?></h2>
+	<?php endif; ?>
 
-	<?php echo $item['dump'] ?>
-<?php endforeach ?>
+	<?php echo $item['dump']; ?>
+<?php endforeach; ?>
 </div>

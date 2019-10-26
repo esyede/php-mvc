@@ -68,9 +68,9 @@ class Cache
             $expiration = $this->default_lifetime;
         }
         $data = [
-            'time'   => time(),
+            'time' => time(),
             'expire' => $expiration,
-            'data'   => serialize($data),
+            'data' => serialize($data),
         ];
 
         $content = $this->getContent();
@@ -87,9 +87,8 @@ class Cache
         $content = $this->getContent($fileName);
         if (! isset($content[$key]['data'])) {
             return null;
-        } else {
-            return unserialize($content[$key]['data']);
         }
+        return unserialize($content[$key]['data']);
     }
 
     public function delete($key)

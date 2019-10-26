@@ -6,12 +6,10 @@ class Permission_model extends Model
 {
     private $table = 'permissions';
 
-
     public function __construct()
     {
         parent::__construct();
     }
-
 
     public function find($id)
     {
@@ -22,7 +20,6 @@ class Permission_model extends Model
             ->one();
     }
 
-
     public function all()
     {
         return $this->db
@@ -30,7 +27,6 @@ class Permission_model extends Model
             ->where('deleted_at IS NULL')
             ->many();
     }
-
 
     public function add(array $data)
     {
@@ -40,7 +36,6 @@ class Permission_model extends Model
             ->execute();
     }
 
-
     public function edit(array $data)
     {
         return $this->db
@@ -49,7 +44,6 @@ class Permission_model extends Model
             ->update($data)
             ->execute();
     }
-
 
     public function delete($id)
     {

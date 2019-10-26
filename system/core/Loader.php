@@ -9,29 +9,27 @@ class Loader
 
     private static $instance;
 
-
     public function __construct()
     {
         self::$instance = $this;
     }
-
 
     public static function getInstance()
     {
         if (null === self::$instance) {
             self::$instance = new self();
         }
+
         return self::$instance;
     }
 
-
     public function model($model, $alias = null)
     {
-        $path = APP.'models'.DS;
+        $path = app_path('models/');
         $class = null;
         $model = trim(str_replace(['.', '/'], DS, $model), DS);
 
-        if (false !== mb_strpos($model, DS)) {
+        if (false !== strpos($model, DS)) {
             $parts = explode(DS, $model);
             $class = ucfirst(end($parts));
             array_pop($parts);
@@ -49,20 +47,19 @@ class Loader
             } else {
                 $this->$alias = new $class();
             }
-            
+
             return true;
-        } else {
-            throw new \RuntimeException('Model not found: '.$model);
         }
+        throw new \RuntimeException('Model not found: '.$model);
     }
 
     public function view($view, array $data = [], $returnOnly = false)
     {
         $view = str_replace(['.', '/'], DS, $view);
         $view = app_path('views/'.$view.'.php');
-        
+
         if (! is_file($view)) {
-            throw new \RuntimeException('View not found: ' . $view);
+            throw new \RuntimeException('View not found: '.$view);
         }
 
         if ($returnOnly) {
@@ -70,9 +67,9 @@ class Loader
         }
 
         extract($data);
+
         return require_once $view;
     }
-
 
     public function plugin($plugin, array $params = null)
     {
@@ -99,7 +96,7 @@ class Loader
                     }
                 }
             }
-            
+
             return $this->$plugin;
         } elseif (is_file($system.DS.ucfirst($plugin).'.php')
         || is_file($system.'.php')) {
@@ -122,13 +119,11 @@ class Loader
                     }
                 }
             }
-            
-            return $this->$plugin;
-        } else {
-            throw new \RuntimeException('Plugin not found: '.$plugin);
-        }
-    }
 
+            return $this->$plugin;
+        }
+        throw new \RuntimeException('Plugin not found: '.$plugin);
+    }
 
     public function helper($helper)
     {
@@ -142,7 +137,6 @@ class Loader
         }
     }
 
-
     public function config($config)
     {
         $location = APP.'configs'.DS.$config.'.php';
@@ -152,31 +146,26 @@ class Loader
             }
 
             return $this->config[$config];
-        } else {
-            throw new \RuntimeException('Config file not found: '.$config);
         }
+        throw new \RuntimeException('Config file not found: '.$config);
     }
-
 
     public function database()
     {
         require_once system_path('db/Database.php');
-        $env = $this->config('config');
-        $config = $this->config('database', $env['development']);
+        $development = (bool) $this->config('config')['development'];
+        $config = $this->config('database', $development);
 
         return \Database::init($config);
     }
 
-
     public function schema()
     {
         require_once system_path('db/Schema.php');
-        $env = $this->config('config');
         $config = $this->config('database');
 
         return new \Schema($config);
     }
-
 
     public function hook($hook)
     {
@@ -187,7 +176,6 @@ class Loader
             throw new \RuntimeException('Hook file not found: '.$hook);
         }
     }
-
 
     public function language($language, $path = null)
     {
@@ -214,13 +202,10 @@ class Loader
         return $this->language;
     }
 
-
     public function file($path)
     {
         if (is_file(root_path($path))) {
-            require_once root_path($path);
-            
-            return true;
+            return require_once root_path($path);
         }
 
         throw new \RuntimeException('Unable to load file: '.root_path($path));

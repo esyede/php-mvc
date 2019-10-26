@@ -1,9 +1,11 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 
 if (empty($data)) {
-	return;
+    return;
 }
 ?>
 <svg version="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" enable-background="new 0 0 48 48">
@@ -17,6 +19,6 @@ if (empty($data)) {
 	margin: -1px -.4em;
 	padding: 1px .4em;
 " title="Severity errors">
-	<?php echo $sum = array_sum($data), $sum > 1 ? ' errors' : ' error' ?>
+	<?php echo $sum = array_sum($data), $sum > 1 ? ' errors' : ' error'; ?>
 </span>
 <!-- </span> -->

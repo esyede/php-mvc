@@ -47,7 +47,7 @@ class Database
         if (null === static::$instance) {
             static::$instance = new static($configs);
         }
-        
+
         return self::$instance;
     }
 
@@ -156,9 +156,8 @@ class Database
             }
 
             return $str;
-        } else {
-            throw new \Exception('Database: invalid where condition');
         }
+        throw new \Exception('Database: invalid where condition');
     }
 
     public function from($table, $reset = true)
@@ -502,9 +501,9 @@ class Database
         if ($this->stats_enabled) {
             $time = microtime(true) - $this->query_time;
             $this->stats['queries'][] = [
-                'query'   => $this->sql,
-                'time'    => $time,
-                'rows'    => (int) $this->num_rows,
+                'query' => $this->sql,
+                'time' => $time,
+                'rows' => (int) $this->num_rows,
                 'changes' => (int) $this->affected_rows,
             ];
         }
@@ -695,7 +694,7 @@ class Database
             case 'file':
                 $file = $this->cache.DS.md5($key);
                 $data = [
-                    'value'  => $value,
+                    'value' => $value,
                     'expire' => ($expire > 0) ? (time() + $expire) : 0,
                 ];
 
@@ -740,9 +739,8 @@ class Database
 
                     if (0 == $data['expire'] || time() < $data['expire']) {
                         return $data['value'];
-                    } else {
-                        $this->is_cached = false;
                     }
+                    $this->is_cached = false;
                 }
                 break;
 

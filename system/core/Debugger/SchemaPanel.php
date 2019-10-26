@@ -15,7 +15,8 @@ class SchemaPanel implements BarPanelInterface
 
     public function getPanel()
     {
-        ob_start(function () {});
+        ob_start(function () {
+        });
         require __DIR__.DS.'assets'.DS.'Bar'.DS.'schema.panel.php';
 
         return ob_get_clean();
@@ -23,7 +24,8 @@ class SchemaPanel implements BarPanelInterface
 
     public function getTab()
     {
-        ob_start(function () {});
+        ob_start(function () {
+        });
         require __DIR__.DS.'assets'.DS.'Bar'.DS.'schema.tab.php';
 
         return ob_get_clean();

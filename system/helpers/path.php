@@ -41,8 +41,7 @@ if (! function_exists('system_path')) {
 if (! function_exists('storage_path')) {
     function storage_path($path = null)
     {
-        $storage = get_instance()->config('config');
-        $storage = $storage['storage_path'];
+        $storage = config('config')['storage_path'];
         $path = trim($path, '/');
         $path = trim($path, '\\');
         $path = str_replace('/', DS, rtrim(ROOT.$storage.DS.$path, '/\\'));

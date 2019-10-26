@@ -13,7 +13,7 @@ class Welcome extends Controller
     {
         $title = 'home';
         $content = 'This is your '.$title.' page';
-        
+
         // $this->blade->clearCache();
         $this->blade->render('home.index', compact('title', 'content'));
     }

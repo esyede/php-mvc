@@ -1,35 +1,35 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 
-if (isset($this->cpu_usage) && $this->time)
-{
-	foreach (getrusage() as $key => $val)
-	{
-		$this->cpu_usage[$key] -= $val;
-	}
+if (isset($this->cpu_usage) && $this->time) {
+    foreach (getrusage() as $key => $val) {
+        $this->cpu_usage[$key] -= $val;
+    }
 
-	$userUsage = -round(($this->cpu_usage['ru_utime.tv_sec'] * 1e6 
-		+ $this->cpu_usage['ru_utime.tv_usec']) / $this->time / 10000);
+    $userUsage = -round(($this->cpu_usage['ru_utime.tv_sec'] * 1e6
+        + $this->cpu_usage['ru_utime.tv_usec']) / $this->time / 10000);
 
-	$systemUsage = -round(($this->cpu_usage['ru_stime.tv_sec'] * 1e6
-		+ $this->cpu_usage['ru_stime.tv_usec']) / $this->time / 10000);
+    $systemUsage = -round(($this->cpu_usage['ru_stime.tv_sec'] * 1e6
+        + $this->cpu_usage['ru_stime.tv_usec']) / $this->time / 10000);
 }
 
 $info = array_filter([
-	'Execution time' => str_replace(' ', ' ', number_format($this->time * 1000, 1, '.', ' ')).' ms',
-	'CPU usage' => isset($userUsage) ? (int) $userUsage.' % + '.(int) $systemUsage.' %' : null,
-	'Peak memory' => str_replace(' ', ' ', number_format(memory_get_peak_usage() / 1000000, 2, '.', ' ')).' MB',
-	'Included files' => count(get_included_files()),
-	'Classes + interfaces + traits' => count(get_declared_classes()).' + '
-		. count(get_declared_interfaces()).' + ' 
-		. (PHP_VERSION_ID >= 50400 ? count(get_declared_traits()) : '0'),
-	'Your IP' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null,
-	'Server IP' => isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null,
-	'PHP' => PHP_VERSION,
-	'Xdebug' => extension_loaded('xdebug') ? phpversion('xdebug') : null,
-	'Server' => isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : null,
-] + (array)$this->data);
+    'Execution time' => str_replace(' ', ' ', number_format($this->time * 1000, 1, '.', ' ')).' ms',
+    'CPU usage' => isset($userUsage) ? (int) $userUsage.' % + '.(int) $systemUsage.' %' : null,
+    'Peak memory' => str_replace(' ', ' ', number_format(memory_get_peak_usage() / 1000000, 2, '.', ' ')).' MB',
+    'Included files' => count(get_included_files()),
+    'Classes + interfaces + traits' => count(get_declared_classes()).' + '
+        .count(get_declared_interfaces()).' + '
+        .(PHP_VERSION_ID >= 50400 ? count(get_declared_traits()) : '0'),
+    'Your IP' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null,
+    'Server IP' => isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null,
+    'PHP' => PHP_VERSION,
+    'Xdebug' => extension_loaded('xdebug') ? phpversion('xdebug') : null,
+    'Server' => isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : null,
+] + (array) $this->data);
 
 ?>
 <style class="debugger-debug">
@@ -52,15 +52,15 @@ $info = array_filter([
 <?php foreach ($info as $key => $val): ?>
 <tr>
 <?php if (mb_strlen($val, 'UTF-8') > 25): ?>
-	<td colspan=2><?php echo htmlspecialchars($key, null, 'UTF-8') ?> 
-		<b><?php echo htmlspecialchars($val, null, 'UTF-8') ?>
+	<td colspan=2><?php echo htmlspecialchars($key, null, 'UTF-8'); ?> 
+		<b><?php echo htmlspecialchars($val, null, 'UTF-8'); ?>
 		</b>
 	</td>
 <?php else: ?>
-	<td><?php echo htmlspecialchars($key, null, 'UTF-8') ?></td>
-	<td><?php echo htmlspecialchars($val, null, 'UTF-8') ?></td>
-<?php endif ?>
+	<td><?php echo htmlspecialchars($key, null, 'UTF-8'); ?></td>
+	<td><?php echo htmlspecialchars($val, null, 'UTF-8'); ?></td>
+<?php endif; ?>
 </tr>
-<?php endforeach ?>
+<?php endforeach; ?>
 </table>
 </div>

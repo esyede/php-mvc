@@ -156,7 +156,7 @@ class Logger implements LoggerInterface
                     'Content-Transfer-Encoding: 8bit',
                 ])."\n",
                 'subject' => "PHP: An error occurred on the server $host",
-                'body'    => $this->formatMessage($message)."\n\nsource: ".Helpers::getSource(),
+                'body' => $this->formatMessage($message)."\n\nsource: ".Helpers::getSource(),
             ]
         );
 

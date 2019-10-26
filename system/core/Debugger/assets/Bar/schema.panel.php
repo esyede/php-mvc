@@ -1,5 +1,7 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 ?>
 <style>tr.mono { font-family: monospace !important; }</style>
@@ -33,10 +35,10 @@ defined('BASE') or exit('No direct script access allowed');
         </tr>
     <?php foreach ($data as $item): ?>
         <tr class="mono">
-            <td><?php echo $query ?></td>
-            <td><?php echo $time ?></td>
-            <td><pre><?php echo $rows ?></pre></td>
-            <td><pre><?php echo $changes ?></pre></td>
+            <td><?php echo $query; ?></td>
+            <td><?php echo $time; ?></td>
+            <td><pre><?php echo $rows; ?></pre></td>
+            <td><pre><?php echo $changes; ?></pre></td>
         </tr>
     <?php endforeach; ?>
     </table>

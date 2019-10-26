@@ -44,9 +44,7 @@ class Pagination
         'margin: 0 5px; border: 1px solid #bc5858;">';
     public $num_tag_close = '</li>';
 
-    public function __construct()
-    {
-    }
+    public function __construct() { }
 
     public function init($config)
     {

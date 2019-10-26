@@ -21,13 +21,13 @@ class FireLogger implements LoggerInterface
         $time = number_format((microtime(true) - Debugger::$time) * 1000, 1, '.', ' ');
 
         $item = [
-            'name'     => 'PHP',
-            'level'    => $priority,
-            'order'    => count($this->payload['logs']),
-            'time'     => str_pad($time, 8, '0', STR_PAD_LEFT).' ms',
+            'name' => 'PHP',
+            'level' => $priority,
+            'order' => count($this->payload['logs']),
+            'time' => str_pad($time, 8, '0', STR_PAD_LEFT).' ms',
             'template' => '',
-            'message'  => '',
-            'style'    => 'background:#767ab6',
+            'message' => '',
+            'style' => 'background:#767ab6',
         ];
 
         $args = func_get_args();
@@ -81,13 +81,13 @@ class FireLogger implements LoggerInterface
 
         foreach ($trace as $frame) {
             $frame += [
-                'file'     => null,
-                'line'     => null,
-                'class'    => null,
-                'type'     => null,
+                'file' => null,
+                'line' => null,
+                'class' => null,
+                'type' => null,
                 'function' => null,
-                'object'   => null,
-                'args'     => null,
+                'object' => null,
+                'args' => null,
             ];
 
             $item['exc_info'][2][] = [
@@ -144,9 +144,8 @@ class FireLogger implements LoggerInterface
                 unset($var[$marker]);
 
                 return $res;
-            } else {
-                return " \xE2\x80\xA6 ";
             }
+            return " \xE2\x80\xA6 ";
         } elseif (is_object($var)) {
             $arr = (array) $var;
 
@@ -170,13 +169,11 @@ class FireLogger implements LoggerInterface
                 array_pop($list);
 
                 return $res;
-            } else {
-                return " \xE2\x80\xA6 ";
             }
+            return " \xE2\x80\xA6 ";
         } elseif (is_resource($var)) {
             return 'resource '.get_resource_type($var);
-        } else {
-            return 'unknown type';
         }
+        return 'unknown type';
     }
 }

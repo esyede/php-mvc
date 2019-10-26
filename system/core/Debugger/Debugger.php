@@ -431,14 +431,14 @@ class Debugger
             ob_start(function () {
             });
             Dumper::dump($var, [
-                Dumper::DEPTH    => self::$max_depth,
+                Dumper::DEPTH => self::$max_depth,
                 Dumper::TRUNCATE => self::$max_len,
             ]);
 
             return ob_get_clean();
         } elseif (! self::$production_mode) {
             Dumper::dump($var, [
-                Dumper::DEPTH    => self::$max_depth,
+                Dumper::DEPTH => self::$max_depth,
                 Dumper::TRUNCATE => self::$max_len,
                 Dumper::LOCATION => self::$show_location,
             ]);
@@ -469,8 +469,8 @@ class Debugger
 
             $panel->data[] = [
                 'title' => $title,
-                'dump'  => Dumper::toHtml($var, (array) $options + [
-                    Dumper::DEPTH    => self::$max_depth,
+                'dump' => Dumper::toHtml($var, (array) $options + [
+                    Dumper::DEPTH => self::$max_depth,
                     Dumper::TRUNCATE => self::$max_len,
                     Dumper::LOCATION => self::$show_location
                         ?: Dumper::LOCATION_CLASS | Dumper::LOCATION_SOURCE,

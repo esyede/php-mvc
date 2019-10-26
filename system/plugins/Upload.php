@@ -78,23 +78,22 @@ class Upload
                 $this->error = lang('upload', 'file_type_error');
 
                 return false;
-            } else {
-                if (in_array($extension, $imageExtension)) {
-                    if ($this->max_width > 0 || $this->max_height > 0) {
-                        list($width, $height) = getimagesize($this->file['tmp_name']);
+            }
+            if (in_array($extension, $imageExtension)) {
+                if ($this->max_width > 0 || $this->max_height > 0) {
+                    list($width, $height) = getimagesize($this->file['tmp_name']);
 
-                        if ($width > $this->max_width || $height > $this->max_height) {
-                            $this->error = lang(
-                                'upload',
-                                'max_dimension_error',
-                                [
+                    if ($width > $this->max_width || $height > $this->max_height) {
+                        $this->error = lang(
+                            'upload',
+                            'max_dimension_error',
+                            [
                                     '%s' => $this->max_width,
                                     '%t' => $this->max_height,
                                 ]
-                            );
+                        );
 
-                            return false;
-                        }
+                        return false;
                     }
                 }
             }
@@ -122,24 +121,24 @@ class Upload
             $this->error = lang('upload', 'upload_path_needed_error');
 
             return false;
-        } else {
-            if (! is_dir($this->upload_path)) {
-                $this->error = lang('upload', 'wrong_upload_path_error', $this->upload_path);
-
-                return false;
-            } else {
-                if (! is_writable($this->upload_path)) {
-                    $this->error = lang('upload', 'permission_error');
-
-                    return false;
-                }
-            }
         }
+        if (! is_dir($this->upload_path)) {
+            $this->error = lang('upload', 'wrong_upload_path_error', $this->upload_path);
+
+            return false;
+        }
+        if (! is_writable($this->upload_path)) {
+            $this->error = lang('upload', 'permission_error');
+
+            return false;
+        }
+            
+        
 
         return true;
     }
 
-    public function getErrors()
+    public function errors()
     {
         return $this->error;
     }

@@ -4,6 +4,8 @@ defined('BASE') or exit('No direct script access allowed');
 
 class App
 {
+    const VERSION = '1.0.0';
+
     private $load;
 
     protected $config;
@@ -15,11 +17,6 @@ class App
     protected $method;
     protected $params = [];
 
-    const VERSION = '1.0.0';
-
-    /**
-     * Constructor.
-     */
     public function __construct()
     {
         $this->load = get_instance();
@@ -31,7 +28,7 @@ class App
         if (false === \Debugger\Debugger::isEnabled()) {
             $logPath = storage_path('logs');
             $production = (true !== $this->config['development']);
-            
+
             if (filled($this->config['error_email'])) {
                 \Debugger\Debugger::$email = $this->config['error_email'];
             }
@@ -67,7 +64,7 @@ class App
 
             $this->load->file($composer);
         }
-        
+
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
@@ -124,12 +121,12 @@ class App
             }
         }
 
-        return ($matched > 0);
+        return $matched > 0;
     }
 
     /**
      * Set controller based on supplied query string
-     * @param  array|null  $url  Query string
+     * @param  array|null  $url  query string
      */
     private function setController(array $url = null)
     {
@@ -163,7 +160,7 @@ class App
 
     /**
      * Set action based on supplied query string
-     * @param  array|null  $url  Query string
+     * @param  array|null  $url  query string
      */
     private function setAction(array $url = null)
     {
@@ -193,8 +190,8 @@ class App
     }
 
     /**
-     * Set parameters based on supplied query string
-     * @param  array|null  $url  Query string
+     * Set parameter based on supplied query string
+     * @param  array|null  $url  query string
      */
     private function setParams(array $url = null)
     {
@@ -211,9 +208,8 @@ class App
     }
 
     /**
-     * Normalize query string to match with
-     * internal class and method naming convention
-     * @param   string  $str  Query string
+     * Make query string match with controller naming rule
+     * @param   string  $str  query string
      * @return  string
      */
     public function makeURL($str)
@@ -226,20 +222,19 @@ class App
         $path = $path.'.php';
         if (is_file($path)) {
             return require_once $path;
-        } else {
-            throw new \RuntimeException('Failed to load file: '.$path);
         }
+        throw new \RuntimeException('Failed to load file: '.$path);
     }
 
     public function getRouteInfo()
     {
         $controller = $this->controller;
         $data = [
-            'url'        => implode('/', (array) $this->url),
-            'uri'        => $_SERVER['REQUEST_URI'],
+            'url' => implode('/', (array) $this->url),
+            'uri' => $_SERVER['REQUEST_URI'],
             'controller' => is_object($controller) ? get_class($controller) : $controller,
-            'method'     => $this->method,
-            'params'     => $this->params,
+            'method' => $this->method,
+            'params' => $this->params,
         ];
 
         return $data;
@@ -247,7 +242,7 @@ class App
 
     /**
      * Create system storage folders
-     * @return  bool
+     * @return bool
      */
     private function createStorageFolders()
     {

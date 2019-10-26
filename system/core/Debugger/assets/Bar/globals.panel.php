@@ -1,5 +1,7 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 
 $server = isset($GLOBALS['_SERVER']) ? $GLOBALS['_SERVER'] : null;
@@ -23,9 +25,9 @@ $session = isset($GLOBALS['_SESSION']) ? $GLOBALS['_SESSION'] : null;
         </tr>
         <?php foreach ($cookie as $key => $value): ?>
             <tr class="mono">
-                <td><?php echo $key ?></td>
-                <td><?php echo $value ?></td>
+                <td><?php echo $key; ?></td>
+                <td><?php echo $value; ?></td>
             </tr>
-        <?php endforeach ?>
+        <?php endforeach; ?>
     </table>
 </div>

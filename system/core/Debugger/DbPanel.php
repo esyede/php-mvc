@@ -18,7 +18,8 @@ class DbPanel implements BarPanelInterface
 
     public function getPanel()
     {
-        ob_start(function () { });
+        ob_start(function () {
+        });
         require __DIR__.DS.'assets'.DS.'Bar'.DS.'db.panel.php';
 
         return ob_get_clean();
@@ -26,7 +27,8 @@ class DbPanel implements BarPanelInterface
 
     public function getTab()
     {
-        ob_start(function () { });
+        ob_start(function () {
+        });
         require __DIR__.DS.'assets'.DS.'Bar'.DS.'db.tab.php';
 
         return ob_get_clean();

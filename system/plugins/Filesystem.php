@@ -19,25 +19,24 @@ class Filesystem
             if (false === $handle) {
                 return false;
             }
-            
+
             fclose($handle);
             unlink($file);
 
             return true;
-        } else {
-            if (! file_exists($path)) {
-                return false;
-            }
-
-            $handle = @fopen($path, 'w');
-            if (false === $handle) {
-                return false;
-            }
-            
-            fclose($handle);
-
-            return true;
         }
+        if (! file_exists($path)) {
+            return false;
+        }
+
+        $handle = @fopen($path, 'w');
+        if (false === $handle) {
+            return false;
+        }
+
+        fclose($handle);
+
+        return true;
     }
 
     public function isReadable($path)
@@ -48,24 +47,23 @@ class Filesystem
             if (false === $handle) {
                 return false;
             }
-            
+
             closedir($handle);
 
             return true;
-        } else {
-            if (! file_exists($path)) {
-                return false;
-            }
-
-            $handle = @fopen($path, 'r');
-            if (false === $handle) {
-                return false;
-            }
-            
-            fclose($handle);
-
-            return true;
         }
+        if (! file_exists($path)) {
+            return false;
+        }
+
+        $handle = @fopen($path, 'r');
+        if (false === $handle) {
+            return false;
+        }
+
+        fclose($handle);
+
+        return true;
     }
 
     public function createFolder($path, $chmod = 0755)
@@ -94,12 +92,12 @@ class Filesystem
             if (false === $handle) {
                 return false;
             }
-            
+
             while (false !== ($item = readdir($handle))) {
-                if ($item === '.' || $item === '..') {
+                if ('.' === $item || '..' === $item) {
                     continue;
                 }
-                
+
                 $file = $path.$item;
                 if (is_dir($file)) {
                     $this->deleteFolder($file);
@@ -125,31 +123,31 @@ class Filesystem
             if (DS !== $path[strlen($path) - 1]) {
                 $path = $path.DS;
             }
-            
+
             $handle = @opendir($path);
             if (false === $handle) {
                 return false;
             }
-            
+
             $files = [];
             while (false !== ($item = readdir($handle))) {
-                if ($item === '.' || $item === '..') {
+                if ('.' === $item || '..' === $item) {
                     continue;
                 }
-                
+
                 if (! $detail && ! $deep) {
                     $files[] = $item;
                     continue;
                 }
-                
+
                 $file = $path.$item;
                 if (is_dir($file)) {
                     $details = [
                         'type' => 'folder',
                         'name' => $item,
-                        'path' => $path
+                        'path' => $path,
                     ];
-                    
+
                     if ($deep) {
                         $details['listing'] = $this->readFolder($file, $detail, $deep - 1);
                     }
@@ -157,7 +155,7 @@ class Filesystem
                     $details = [
                         'type' => 'folder',
                         'name' => $item,
-                        'path' => $path
+                        'path' => $path,
                     ];
                 }
 
@@ -174,7 +172,7 @@ class Filesystem
                         if ('file' == $details['type']) {
                             $details['size'] = @filesize($path.$item);
                         }
-                        
+
                         $details['modified'] = filemtime($path.$item);
                         $details['accessed'] = fileatime($path.$item);
                     }
@@ -231,13 +229,13 @@ class Filesystem
             if (false === $handle) {
                 return false;
             }
-            
+
             $files = [];
             while (false !== ($item = readdir($handle))) {
-                if ($item === '.' || $item === '..') {
+                if ('.' === $item || '..' === $item) {
                     continue;
                 }
-                
+
                 $file = $path.$item;
                 if (! is_dir($file)) {
                     $files[] = $item;
@@ -264,10 +262,10 @@ class Filesystem
             if (false === $handle) {
                 return false;
             }
-            
+
             $dirs = [];
             while (false !== ($item = readdir($handle))) {
-                if ($item === '.' || $item === '..') {
+                if ('.' === $item || '..' === $item) {
                     continue;
                 }
 
@@ -276,7 +274,7 @@ class Filesystem
                     if ($deep) {
                         $dirs[] = [
                             'name' => $item,
-                            'sub' => $this->listFolders($file, $deep - 1)
+                            'sub' => $this->listFolders($file, $deep - 1),
                         ];
                     } else {
                         $dirs[] = $item;
@@ -308,7 +306,7 @@ class Filesystem
 
             $dirs = [];
             while (false !== ($item = readdir($handle))) {
-                if ($item === '.' || $item === '..') {
+                if ('.' === $item || '..' === $item) {
                     continue;
                 }
 
@@ -318,19 +316,18 @@ class Filesystem
             closedir($handle);
 
             return $format ? $this->formatSize($total) : $total;
-        } else {
-            if (PHP_OS_FAMILY === 'Windows') {
-                $total = exec('for %v in ("'.$path.'") do @echo %~zv');
-            } else {
-                $total = exec("perl -e 'printf \"%d\n\",(stat(shift))[7];' ".$path);
-            }
-
-            if ('0' == $total) {
-                $total = @filesize($path);
-            }
-
-            return $format ? $this->formatSize($total) : $total;
         }
+        if (PHP_OS_FAMILY === 'Windows') {
+            $total = exec('for %v in ("'.$path.'") do @echo %~zv');
+        } else {
+            $total = exec("perl -e 'printf \"%d\n\",(stat(shift))[7];' ".$path);
+        }
+
+        if ('0' == $total) {
+            $total = @filesize($path);
+        }
+
+        return $format ? $this->formatSize($total) : $total;
     }
 
     public function copy($from, $to)
@@ -371,12 +368,10 @@ class Filesystem
                 }
 
                 return true;
-            } else {
-                return $this->deleteFolder($path);
             }
-        } else {
-            return $this->deleteFile($path);
+            return $this->deleteFolder($path);
         }
+        return $this->deleteFile($path);
     }
 
     public function getError()

@@ -1,5 +1,7 @@
 <?php
+
 namespace Debugger;
+
 defined('BASE') or exit('No direct script access allowed');
 
 $this->time = microtime(true) - Debugger::$time;
@@ -14,6 +16,6 @@ $this->time = microtime(true) - Debugger::$time;
     </g>
 </svg>
 <span class="debugger-label" title="System info">
-	<?php echo str_replace(' ', ' ', number_format($this->time * 1000, 1, '.', ' ')) ?> ms
+	<?php echo str_replace(' ', ' ', number_format($this->time * 1000, 1, '.', ' ')); ?> ms
 </span>
 </span>

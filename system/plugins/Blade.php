@@ -24,7 +24,7 @@ class Blade
         $this->setFileExtension('.blade.php');
         $this->setViewFolder(app_path('views'));
         $this->setCacheFolder(storage_path('views'));
-        $this->setEchoFormat("e(%s, 'UTF-8')");
+        $this->setEchoFormat('e(%s)');
         // reset
         $this->blocks = [];
         $this->block_stacks = [];
@@ -99,7 +99,7 @@ class Blade
 
             return '<?php echo '.$this->compileEchoDefaults($matches[1]).' ?>'.$whitespace;
         }, $value);
-        
+
         // compile regular echoes
         $pattern = '/(@)?\{\{\s*(.+?)\s*\}\}(\r?\n)?/s';
         $value = preg_replace_callback($pattern, function ($matches) {
@@ -159,6 +159,7 @@ class Blade
     //!----------------------------------------------------------------
     //! Conserns
     //!----------------------------------------------------------------
+
     /**
      * Usage: @site('dahboard/index')
      * @param   string  $value  Some PHP expression
@@ -169,7 +170,7 @@ class Blade
         return "<?php echo site{$value}; ?>";
     }
 
-   /**
+    /**
      * Usage: @php($var = 'value')
      * @param   string  $value  Some PHP expression
      * @return  string
@@ -184,7 +185,7 @@ class Blade
     }
 
     /**
-     * Usage: @json($data)
+     * Usage: @json(data)
      * @param   mixed  $value
      * @return  string
      */
@@ -207,7 +208,7 @@ class Blade
     }
 
     /**
-     * Usage: @unset($var)
+     * Usage: @unset(var)
      * @param   mixed  $value
      * @return  string
      */
@@ -217,8 +218,8 @@ class Blade
     }
 
     /**
-     * Usage: @if($condition)
-     * @param   mixed  $value
+     * Usage: @if(condition)
+     * @param   mixed $value
      * @return  string
      */
     protected function compileIf($value)
@@ -228,7 +229,7 @@ class Blade
 
     /**
      * Usage: @elseif(condition)
-     * @param   mixed  $value
+     * @param   mixed $value
      * @return  string
      */
     protected function compileElseif($value)
@@ -244,7 +245,7 @@ class Blade
     {
         return '<?php else: ?>';
     }
-    
+
     /**
      * Usage: @endif
      * @return  string
@@ -255,8 +256,8 @@ class Blade
     }
 
     /**
-     * Usage: @switch($state)
-     * @param   mixed  $value
+     * Usage: @switch(conditions)
+     * @param   mixed $value
      * @return  string
      */
     protected function compileSwitch($value)
@@ -267,7 +268,7 @@ class Blade
     }
 
     /**
-     * Usage: @case($condition)
+     * Usage: @case(condition)
      * @param   mixed  $value
      * @return  string
      */
@@ -293,8 +294,8 @@ class Blade
     }
 
     /**
-     * Usage: @break or @break($condition)
-     * @param   mixed  $value
+     * Usage: @break or @break(condition)
+     * @param   mixed $value
      * @return  string
      */
     protected function compileBreak($value)
@@ -321,7 +322,7 @@ class Blade
     }
 
     /**
-     * Usage: @isset($var)
+     * Usage: @isset(var)
      * @param   mixed  $value
      * @return  string
      */
@@ -332,7 +333,7 @@ class Blade
 
     /**
      * Usage: @endisset
-     * @return  string
+     * @return string
      */
     protected function compileEndisset()
     {
@@ -340,7 +341,7 @@ class Blade
     }
 
     /**
-     * Usage: @continue or @continue($condition)
+     * Usage: @continue or @continue(condition)
      * @param   mixed  $value
      * @return  string
      */
@@ -359,7 +360,7 @@ class Blade
     }
 
     /**
-     * Usage: @exit or @exit($condition)
+     * Usage: @exit or @exit(condition)
      * @param   mixed  $value
      * @return  string
      */
@@ -373,11 +374,12 @@ class Blade
                 ? '<?php exit '.max(1, $matches[1]).'; ?>'
                 : "<?php if{$value} exit; ?>";
         }
+
         return '<?php exit; ?>';
     }
 
     /**
-     * Usage: @unless($condition)
+     * Usage: @unless(condition)
      * @param   mixed  $value
      * @return  string
      */
@@ -396,7 +398,7 @@ class Blade
     }
 
     /**
-     * Usage: @for($condition)
+     * Usage: @for(condition)
      * @param   mixed  $value
      * @return  string
      */
@@ -434,8 +436,8 @@ class Blade
     }
 
     /**
-     * Usage: @forelse($condition)
-     * @param   mixed  $value
+     * Usage: @forelse(condition)
+     * @param   mixed $value
      * @return  string
      */
     protected function compileForelse($value)
@@ -469,7 +471,7 @@ class Blade
     }
 
     /**
-     * Usage: @while($condition)
+     * Usage: @while(condition)
      * @param   mixed  $value
      * @return  string
      */
@@ -488,7 +490,7 @@ class Blade
     }
 
     /**
-     * Usage: @extends($parentView)
+     * Usage: @extends(parent)
      * @param   string  $value
      * @return  string
      */
@@ -502,7 +504,7 @@ class Blade
     }
 
     /**
-     * Usage: @include($view)
+     * Usage: @include(view)
      * @param   mixed  $value
      * @return  string
      */
@@ -516,7 +518,7 @@ class Blade
     }
 
     /**
-     * Usage: @yield($data)
+     * Usage: @yield(section)
      * @param   mixed  $value
      * @return  string
      */
@@ -526,7 +528,7 @@ class Blade
     }
 
     /**
-     * Usage: @section($view)
+     * Usage: @section(view)
      * @param   mixed  $value
      * @return  string
      */
@@ -593,26 +595,26 @@ class Blade
             "value=\"<?php echo strtoupper{$value} ?>\">\n";
     }
 
-     //!----------------------------------------------------------------
+    //!----------------------------------------------------------------
     //! Renderer
     //!----------------------------------------------------------------
+
     /**
      * Render the view template
+     * Tip: dot and forward-slash (., /) can be used as directory separator
      * @param   string  $name        View name
      * @param   array   $data        View data
-     * @param   bool    $returnOnly  Don't echo it to the browser?
+     * @param   bool    $returnOnly  Only return, don't print the html data
      * @return  string
-     * 
-     * Tip: dot and forward-slash (., /) can be used as directory separator
      */
     public function render($name, array $data = [], $returnOnly = false)
     {
         $html = $this->fetch($name, $data);
         if (false !== $returnOnly) {
             return $html;
-        } else {
-            echo $html;
         }
+
+        echo $html;
     }
 
     /**
@@ -631,7 +633,7 @@ class Blade
     }
 
     /**
-     * Set file extension for the view files (default to: *.blade.php)
+     * Set file extension of view files (default: .blade.php)
      * @param  string  $value
      */
     public function setFileExtension($value)
@@ -640,7 +642,7 @@ class Blade
     }
 
     /**
-     * Set view folder location (default to: ./views)
+     * Set view folder location (default: ./app/views)
      * @param  string  $value
      */
     public function setViewFolder($value)
@@ -649,7 +651,7 @@ class Blade
     }
 
     /**
-     * Set cache folder location (default to: ./cache)
+     * Set cache folder location (default: ./storage/cache)
      * @param  string  $value
      */
     public function setCacheFolder($value)
@@ -658,7 +660,7 @@ class Blade
     }
 
     /**
-     * Set echo format (default to: $this->esc($yourData))
+     * Set echo format (default: e(data))
      * @param  string  $value
      */
     public function setEchoFormat($value)
@@ -752,7 +754,7 @@ class Blade
     }
 
     /**
-     * Helper method for @extends() directive to define parent view
+     * Helper method for @extends() command
      * @param  string  $name  Parent view name
      */
     protected function addParent($name)
@@ -775,8 +777,7 @@ class Blade
 
     /**
      * Start the block
-     * @param   string  $name  Block name
-     * @return  void
+     * @param  string  $name  Block name
      */
     protected function beginBlock($name)
     {
@@ -786,8 +787,7 @@ class Blade
 
     /**
      * Ends the block
-     * @param   bool  $overwrite  Overwrite earlier block if it has same name?
-     * @return  void
+     * @param  bool  $overwrite  Overwrite earlier block if it has same name?
      */
     protected function endBlock($overwrite = false)
     {

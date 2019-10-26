@@ -6,12 +6,10 @@ class User_model extends Model
 {
     private $table = 'users';
 
-
     public function __construct()
     {
         parent::__construct();
     }
-
 
     public function find($id)
     {
@@ -22,7 +20,6 @@ class User_model extends Model
             ->one();
     }
 
-
     public function all()
     {
         return $this->db
@@ -30,7 +27,6 @@ class User_model extends Model
             ->where('deleted_at IS NULL')
             ->many();
     }
-
 
     public function add($data)
     {
@@ -42,7 +38,6 @@ class User_model extends Model
             ->execute();
     }
 
-
     public function edit($data)
     {
         return $this->db
@@ -51,7 +46,6 @@ class User_model extends Model
             ->update($data)
             ->execute();
     }
-
 
     public function delete($id)
     {
@@ -68,10 +62,9 @@ class User_model extends Model
         return false;
     }
 
-
     public function addRoles($userId, $roles)
     {
-        $data = ['user_id' =>  $userId];
+        $data = ['user_id' => $userId];
         $success = false;
 
         if (is_array($roles)) {
@@ -84,9 +77,8 @@ class User_model extends Model
             $success = $this->addRole($data);
         }
 
-        return (false !== $success);
+        return false !== $success;
     }
-
 
     public function addRole($data)
     {
@@ -96,7 +88,6 @@ class User_model extends Model
             ->execute();
     }
 
-
     public function editRoles($userId, $roles)
     {
         $success = false;
@@ -105,9 +96,8 @@ class User_model extends Model
             $success = $this->addRoles($userId, $roles);
         }
 
-        return (false !== $success);
+        return false !== $success;
     }
-
 
     public function deleteRoles($userId, $roles)
     {
@@ -118,7 +108,6 @@ class User_model extends Model
             ->execute();
     }
 
-
     public function deleteRole($userId, $roleId)
     {
         return $this->db
@@ -128,7 +117,6 @@ class User_model extends Model
             ->delete()
             ->execute();
     }
-
 
     public function userWiseRoles($id)
     {
@@ -142,7 +130,6 @@ class User_model extends Model
         }, $query);
     }
 
-
     public function userWiseRoleDetails($id)
     {
         $self = $this;
@@ -151,7 +138,6 @@ class User_model extends Model
             return $self->findRole($item);
         }, $this->userWiseRoles($id));
     }
-
 
     public function findRole($id)
     {

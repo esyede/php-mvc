@@ -6,12 +6,10 @@ class Role_model extends Model
 {
     private $table = 'roles';
 
-
     public function __construct()
     {
         parent::__construct();
     }
-
 
     public function find($id)
     {
@@ -22,7 +20,6 @@ class Role_model extends Model
             ->one();
     }
 
-
     public function all()
     {
         return $this->db
@@ -30,7 +27,6 @@ class Role_model extends Model
             ->where('deleted_at IS NULL')
             ->many();
     }
-
 
     public function add(array $data)
     {
@@ -40,7 +36,6 @@ class Role_model extends Model
             ->execute();
     }
 
-
     public function edit(array $data)
     {
         return $this->db
@@ -49,7 +44,6 @@ class Role_model extends Model
             ->update($data)
             ->execute();
     }
-
 
     public function delete($id)
     {
@@ -66,7 +60,6 @@ class Role_model extends Model
         return false;
     }
 
-
     public function addPermissions($roleId, $permissions)
     {
         $data = ['role_id' => $roleId];
@@ -77,15 +70,13 @@ class Role_model extends Model
                 $data['permission_id'] = $permission;
                 $success = $this->addPermission($data);
             }
-        }
-        else {
+        } else {
             $data['permission_id'] = $permissions;
             $success = $this->addPermission($data);
         }
 
-        return (false !== $success);
+        return false !== $success;
     }
-
 
     public function addPermission($data)
     {
@@ -95,7 +86,6 @@ class Role_model extends Model
             ->execute();
     }
 
-
     public function editPermissions($roleId, $permissions)
     {
         $success = false;
@@ -104,9 +94,8 @@ class Role_model extends Model
             $success = $this->addPermissions($roleId, $permissions);
         }
 
-        return (false !== $success);
+        return false !== $success;
     }
-
 
     public function deletePermissions($roleId, $permissions)
     {
@@ -116,7 +105,6 @@ class Role_model extends Model
             ->delete()
             ->execute();
     }
-
 
     public function roleWisePermissions($id)
     {
@@ -130,7 +118,6 @@ class Role_model extends Model
         }, $query);
     }
 
-
     public function roleWisePermissionDetails($id)
     {
         $self = $this;
@@ -140,7 +127,6 @@ class Role_model extends Model
         }, $this->roleWisePermissions($id));
     }
 
-
     public function findPermission($id)
     {
         return $this->db
@@ -149,7 +135,6 @@ class Role_model extends Model
             ->where('id', $id)
             ->one();
     }
-
 
     public function roleId($name)
     {

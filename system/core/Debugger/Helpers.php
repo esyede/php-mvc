@@ -26,9 +26,8 @@ class Helpers
                 basename($file),
                 $line ? ":$line" : ''
             );
-        } else {
-            return self::formatHtml('<span>%</span>', $file.($line ? ":$line" : ''));
         }
+        return self::formatHtml('<span>%</span>', $file.($line ? ":$line" : ''));
     }
 
     public static function editorUri($file, $line = null)
@@ -83,10 +82,10 @@ class Helpers
 
             foreach (array_slice(array_reverse(xdebug_get_function_stack()), 2, -1) as $row) {
                 $frame = [
-                    'file'     => $row['file'],
-                    'line'     => $row['line'],
+                    'file' => $row['file'],
+                    'line' => $row['line'],
                     'function' => isset($row['function']) ? $row['function'] : '*unknown*',
-                    'args'     => [],
+                    'args' => [],
                 ];
 
                 if (! empty($row['class'])) {
@@ -117,21 +116,21 @@ class Helpers
     public static function errorTypeToString($type)
     {
         $types = [
-            E_ERROR             => 'PHP Fatal Error',
-            E_USER_ERROR        => 'PHP User Error',
+            E_ERROR => 'PHP Fatal Error',
+            E_USER_ERROR => 'PHP User Error',
             E_RECOVERABLE_ERROR => 'PHP Recoverable Error',
-            E_CORE_ERROR        => 'PHP Core Error',
-            E_COMPILE_ERROR     => 'PHP Compile Error',
-            E_PARSE             => 'PHP Parse Error',
-            E_WARNING           => 'PHP Warning',
-            E_CORE_WARNING      => 'PHP Core Warning',
-            E_COMPILE_WARNING   => 'PHP Compile Warning',
-            E_USER_WARNING      => 'PHP User Warning',
-            E_NOTICE            => 'PHP Notice',
-            E_USER_NOTICE       => 'PHP User Notice',
-            E_STRICT            => 'PHP Strict Standards',
-            E_DEPRECATED        => 'PHP Deprecated',
-            E_USER_DEPRECATED   => 'PHP User Deprecated',
+            E_CORE_ERROR => 'PHP Core Error',
+            E_COMPILE_ERROR => 'PHP Compile Error',
+            E_PARSE => 'PHP Parse Error',
+            E_WARNING => 'PHP Warning',
+            E_CORE_WARNING => 'PHP Core Warning',
+            E_COMPILE_WARNING => 'PHP Compile Warning',
+            E_USER_WARNING => 'PHP User Warning',
+            E_NOTICE => 'PHP Notice',
+            E_USER_NOTICE => 'PHP User Notice',
+            E_STRICT => 'PHP Strict Standards',
+            E_DEPRECATED => 'PHP Deprecated',
+            E_USER_DEPRECATED => 'PHP User Deprecated',
         ];
 
         return isset($types[$type]) ? $types[$type] : 'Unknown Error';
@@ -144,9 +143,8 @@ class Helpers
                 && strcasecmp($_SERVER['HTTPS'], 'off') ? 'https://' : 'http://')
                .(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '')
                .$_SERVER['REQUEST_URI'];
-        } else {
-            return empty($_SERVER['argv']) ? 'CLI' : 'CLI: '.implode(' ', $_SERVER['argv']);
         }
+        return empty($_SERVER['argv']) ? 'CLI' : 'CLI: '.implode(' ', $_SERVER['argv']);
     }
 
     public static function improveException($e)
