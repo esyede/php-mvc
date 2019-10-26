@@ -2,9 +2,6 @@
 
 defined('BASE') or exit('No direct script access allowed');
 
-use Debugger\DbPanel;
-use Debugger\Debugger;
-
 class Database
 {
     protected $db;
@@ -38,7 +35,9 @@ class Database
     public function __construct(array $configs = [])
     {
         $this->connect($configs);
-        Debugger::getBar()->addPanel(new DbPanel($this));
+        \Debugger\Debugger::getBar()->addPanel(
+            new Debugger\DbPanel($this)
+        );
 
         return $this->db;
     }
