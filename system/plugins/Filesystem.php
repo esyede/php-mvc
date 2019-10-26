@@ -76,7 +76,7 @@ class Filesystem
             return false;
         }
 
-        touch(rtrim($path, DS).DS.'index.html');
+        @touch(rtrim($path, DS).DS.'index.html');
         umask($mask);
 
         return true;

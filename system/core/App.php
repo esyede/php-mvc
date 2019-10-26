@@ -255,16 +255,16 @@ class App
             $this->loader->helper('path');
         }
 
-        $created = false;
+        $created = true;
         if (! is_dir(storage_path())) {
             $created = create_folder(storage_path());
         }
 
         $folders = ['cache', 'cookies', 'logs', 'uploads', 'views'];
         foreach ($folders as $folder) {
-            $path = storage_path($folder);
-            if (! is_dir($path)) {
-                $created =  create_folder($path);
+            $folder = storage_path($folder);
+            if (! is_dir($folder)) {
+                $created = $created && create_folder($folder);
             }
         }
 
@@ -272,7 +272,7 @@ class App
             $message = 'Unable to create system storage folder: '.storage_path();
             throw new \RuntimeException($message);
         }
-        
+
         \Debugger\Debugger::$log_directory = storage_path('logs/');
 
         return true;

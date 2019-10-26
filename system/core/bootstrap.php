@@ -160,6 +160,7 @@ if (! function_exists('create_folder')) {
         if (! mkdir($path, $chmod, true)) {
             return false;
         }
+        
         @touch(rtrim($path, DS).DS.'index.html');
         umask($mask);
 
