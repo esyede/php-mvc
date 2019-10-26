@@ -4,9 +4,7 @@ defined('BASE') or exit('No direct script access allowed');
 
 class Input
 {
-    public function __construct()
-    {
-    }
+    public function __construct() { }
 
     public function get($data = null, $xssClean = true)
     {
