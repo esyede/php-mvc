@@ -155,14 +155,15 @@ if (! function_exists('filled')) {
 if (! function_exists('create_folder')) {
     function create_folder($path, $chmod = 0755)
     {
-        $path = str_replace('/', DS, rtrim(rtrim(ROOT.$path, '/'), DS)).DS;
-        $makedir = @mkdir($path, $chmod, true);
-        bd($makedir,'makedir');
-        $created = (false != $makedir);
-        $makeIndex =  @file_put_contents($path.'index.html', '', LOCK_EX);
-        $created = $created && (false != $makeIndex);
+        $path = str_replace('/', DS, rtrim(rtrim($path, '/'), DS));
+        $mask = umask(0);
+        if (! mkdir($path, $chmod, true)) {
+            return false;
+        }
+        @touch(rtrim($path, DS).DS.'index.html');
+        umask($mask);
 
-        return $created;
+        return true;
     }
 }
 
