@@ -172,7 +172,7 @@ if (! function_exists('create_folder')) {
 if (! function_exists('plugin')) {
     function plugin($plugin, $params = null)
     {
-        get_instance()->plugin($plugin, $params);
+        return get_instance()->plugin($plugin, $params);
     }
 }
 
