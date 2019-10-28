@@ -51,13 +51,30 @@ if (! function_exists('show_error')) {
 }
 
 // Convenient way to show 404 error page
-if (! function_exists('notfound')) {
-    function notfound()
+if (! function_exists('show_404')) {
+    function show_404()
     {
         $message = "We're sorry! The page you have requested ".
             'cannot be found on this server. '.
             'The page may be deleted or no longer exists.';
         show_error($message, 404);
+    }
+}
+
+if (! function_exists('remove_invisible_characters')) {
+    function remove_invisible_characters($str, $urlEncoded = true)
+    {
+        $target = [];
+        if ($urlEncoded) {
+            $target += ['/%0[0-8bcef]/i', '/%1[0-9a-f]/i', '/%7f/i'];
+        }
+        $target[] = '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S';
+
+        do {
+            $str = preg_replace($target, '', $str, -1, $count);
+        } while ($count);
+
+        return $str;
     }
 }
 
