@@ -12,7 +12,7 @@ class App
     protected $url;
     protected $routes;
     protected $controller;
-    protected $controller_folder;
+    protected $folder;
     protected $inside_subfolder = false;
     protected $method;
     protected $params = [];
@@ -21,32 +21,31 @@ class App
     {
         $this->load = get_instance();
         $this->config = $this->load->config('config');
-        $date = $this->config['default_timezone'];
-        date_default_timezone_set(is_null($date) ? 'UTC' : $date);
-        $this->createStorageFolders();
+        $timezone = $this->config['default_timezone'];
+        date_default_timezone_set(is_null($timezone) ? 'UTC' : $timezone);
+        $this->makeStorageFolders();
 
         if (false === \Debugger\Debugger::isEnabled()) {
-            $logPath = storage_path('logs');
+            $logs = storage_path('logs');
             $production = (true !== $this->config['development']);
 
             if (filled($this->config['error_email'])) {
                 \Debugger\Debugger::$email = $this->config['error_email'];
             }
 
-            \Debugger\Debugger::enable($production, $logPath);
+            \Debugger\Debugger::enable($production, $logs);
             \Debugger\Debugger::getBar()->addPanel(new \Debugger\GlobalsPanel());
         }
 
         $this->controller = $this->config['default_controller'];
         $this->method = $this->config['default_method'];
         if ($this->config['default_folder']) {
-            $default = $this->config['default_folder'];
-            $this->controller_folder = 'controllers'.DS.$default.DS;
+            $this->controller_folder = 'controllers'.DS.$this->config['default_folder'].DS;
         } else {
             $this->controller_folder = 'controllers'.DS;
         }
 
-        $this->url = $this->parseURL();
+        $this->url = $this->sliceURL();
         $this->routes = $this->load->config('routes');
 
         if (false === $this->run()) {
@@ -68,10 +67,7 @@ class App
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
-    /**
-     * Run the framework
-     * @return  bool
-     */
+
     private function run()
     {
         if (BASE == '/') {
@@ -82,7 +78,7 @@ class App
 
         $matched = 0;
         foreach ($this->routes as $key => $value) {
-            $key = '/^'.str_replace('/', '\/', $key).'$/';
+            $key = '/^'.str_replace('/', '\/?', $key).'$/';
 
             if (preg_match($key, $url)) {
                 ++$matched;
@@ -94,23 +90,27 @@ class App
 
                 if (is_dir($location.$target[0])) {
                     if (is_file($location.$target[0].DS.ucfirst($target[1]).'.php')) {
-                        $this->controller = $this->makeURL(ucfirst($target[1]));
+                        $this->controller = $this->toUnderscore(ucfirst($target[1]));
                         $this->requireFile(APP.'controllers'.DS.$target[0].DS.$this->controller);
-                        $this->controller = new $this->controller();
+                        $this->controller = new $this->controller;
                     } else {
-                        notfound();
+                        show_404();
                     }
-                    $this->method = $target[2];
+                    $this->method = isset($target[2])
+                        ? $target[2]
+                        : $this->config['default_method'];
                 } else {
                     if (is_file($location.ucfirst($target[0]).'.php')) {
-                        $this->controller = $this->makeURL(ucfirst($target[0]));
+                        $this->controller = $this->toUnderscore(ucfirst($target[0]));
                         $this->requireFile($location.$this->controller);
-                        $this->controller = new $this->controller();
+                        $this->controller = new $this->controller;
                     } else {
-                        notfound();
+                        show_404();
                     }
 
-                    $this->method = $target[1];
+                    $this->method = isset($target[1])
+                        ? $target[1]
+                        : $this->config['default_method'];
                 }
 
                 foreach ($matches as $key => $value) {
@@ -121,47 +121,47 @@ class App
             }
         }
 
-        return $matched > 0;
+        return ($matched > 0);
     }
 
-    /**
-     * Set controller based on supplied query string
-     * @param  array|null  $url  query string
-     */
+
     private function setController(array $url = null)
     {
+        $location = APP.'controllers'.DS;
         if (isset($url[0])) {
-            $location = APP.'controllers'.DS;
             if (is_dir($location.$url[0])) {
                 $this->inside_subfolder = true;
-                if (isset($url[1]) && is_file($location.$url[0].DS.$this->makeURL($url[1]).'.php')) {
-                    $this->controller = $this->makeURL($url[1]);
+                if (isset($url[1]) && is_file($location.$url[0].DS.$this->toUnderscore($url[1]).'.php')) {
+                    $this->controller = $this->toUnderscore($url[1]);
                     $this->requireFile($location.$url[0].DS.$this->controller);
-                    $this->controller = new $this->controller();
+                    $this->controller = new $this->controller;
                 } else {
-                    notfound();
+                    show_404();
                 }
                 $this->url = array_diff_key($url, [0, 1]);
             } else {
-                if (is_file(APP.$this->controller_folder.$this->makeURL($url[0]).'.php')) {
-                    $this->controller = $this->makeURL($url[0]);
+                if (is_file(APP.$this->controller_folder.$this->toUnderscore($url[0]).'.php')) {
+                    $this->controller = $this->toUnderscore($url[0]);
                     $this->requireFile(APP.$this->controller_folder.$this->controller);
-                    $this->controller = new $this->controller();
+                    $this->controller = new $this->controller;
                 } else {
-                    notfound();
+                    if (is_file(APP.'controllers'.DS.$this->toUnderscore($url[0]).'.php')) {
+                        $this->controller = $this->toUnderscore($url[0]);
+                        $this->requireFile(APP.'controllers'.DS.$this->controller);
+                        $this->controller = new $this->controller;
+                    } else {
+                        show_404();
+                    }
                 }
                 $this->url = array_diff_key($url, [0]);
             }
         } else {
             $this->requireFile(APP.$this->controller_folder.$this->controller);
-            $this->controller = new $this->controller();
+            $this->controller = new $this->controller;
         }
     }
 
-    /**
-     * Set action based on supplied query string
-     * @param  array|null  $url  query string
-     */
+
     private function setAction(array $url = null)
     {
         if (true === $this->inside_subfolder) {
@@ -170,7 +170,7 @@ class App
                     if (method_exists($this->controller, $url[2])) {
                         $this->method = $url[2];
                     } else {
-                        notfound();
+                        show_404();
                     }
                 }
                 unset($this->url[2]);
@@ -181,7 +181,7 @@ class App
                     if (method_exists($this->controller, $url[1])) {
                         $this->method = $url[1];
                     } else {
-                        notfound();
+                        show_404();
                     }
                 }
                 unset($this->url[1]);
@@ -189,30 +189,28 @@ class App
         }
     }
 
-    /**
-     * Set parameter based on supplied query string
-     * @param  array|null  $url  query string
-     */
+
     private function setParams(array $url = null)
     {
-        $this->params = $url ? array_values($url) : [];
+        $params = $url ? array_values($url) : [];
+        $this->params = $params;
+        return true;
     }
 
-    public function parseURL()
+    public function sliceURL()
     {
         if (isset($_GET['url'])) {
-            $url = filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL);
 
-            return explode('/', $url);
+            $url = filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL);
+            $url = remove_invisible_characters($url);
+            $url = array_filter(explode('/', $url));
+
+            return $url;
         }
     }
 
-    /**
-     * Make query string match with controller naming rule
-     * @param   string  $str  query string
-     * @return  string
-     */
-    public function makeURL($str)
+
+    public function toUnderscore($str)
     {
         return ucwords(strtolower(str_replace(['-', '%20'], '_', $str)));
     }
@@ -240,11 +238,8 @@ class App
         return $data;
     }
 
-    /**
-     * Create system storage folders
-     * @return bool
-     */
-    private function createStorageFolders()
+
+    private function makeStorageFolders()
     {
         if (! function_exists('storage_path')) {
             $this->load->helper('path');
